@@ -1,0 +1,18 @@
+#!/bin/sh
+# Rejects commit messages that credit a co-author or an AI tool.
+# Any Co-authored-by trailer is refused, so it covers every model and tool, including new ones.
+# Enable once per clone: git config core.hooksPath .githooks
+
+msg=$(grep -v '^#' "$1")
+
+if printf '%s\n' "$msg" | grep -qiE '^[[:space:]]*co-authored-by:'; then
+  echo "commit-msg: remove the Co-authored-by trailer. Commits in this repo have a single author." >&2
+  exit 1
+fi
+
+if printf '%s\n' "$msg" | grep -qiE 'generated (with|by) |claude-session:|(claude|chatgpt|openai|anthropic)\.(ai|com)|\b(claude|anthropic|codex|chatgpt|copilot|gemini)\b|\b(ai|llm)[- ](generated|assisted)\b'; then
+  echo "commit-msg: the message mentions an AI tool or AI attribution. Describe the change only." >&2
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Rejects direct pushes (including deletes and force-pushes) to the shared branches.
+# Changes reach them only through pull requests on GitHub.
+# Enable once per clone: git config core.hooksPath .githooks
+
+protected="main test review"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  for branch in $protected; do
+    if [ "$remote_ref" = "refs/heads/$branch" ]; then
+      echo "pre-push: direct pushes to '$branch' are not allowed. Push your personal branch and open a pull request." >&2
+      exit 1
+    fi
+  done
+done
+
+exit 0

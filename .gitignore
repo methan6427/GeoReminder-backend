@@ -1,0 +1,22 @@
+# Secrets and machine-local config. Never commit these.
+.env
+.env.*
+*.pem
+*.key
+service-account*.json
+*-firebase-adminsdk-*.json
+google-services.json
+GoogleService-Info.plist
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+coverage/
+*.log
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
