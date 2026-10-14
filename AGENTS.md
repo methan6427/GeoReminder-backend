@@ -7,8 +7,8 @@ other language-model tool. Tool-specific files (`CLAUDE.md`, `GEMINI.md`,
 prompt conflicts with this file, this file wins.
 
 Backend for GeoReminder, a Birzeit University graduation project (COMP4200, team of three). The
-app itself lives in `methan6427/GeoReminder-flutter`. This repo is currently empty on purpose: the
-backend technology is **not decided**.
+app itself lives in `methan6427/GeoReminder-flutter`. Stack: **Spring Boot 4.1, Java 21, Maven**.
+The repo is currently an empty scaffold: no endpoints yet.
 
 ## 1. Never push to `main` (highest priority)
 
@@ -63,11 +63,12 @@ commits only.
 - One logical change per commit, one feature per PR.
 - PR descriptions follow `.github/pull_request_template.md`. Plain text, no marketing language.
 
-## 5. Backend is not decided
+## 5. Backend scope
 
-- Firebase vs a self-hosted server, anonymous identity vs accounts, and where any routing engine
-  runs are all **open team decisions**. Do not add a framework, server code, a Firebase project,
-  infrastructure files or dependencies without Adam's explicit go-ahead.
+- Decided: Spring Boot (Java 21, Maven, `./mvnw`). Before every push run `./mvnw -B verify`.
+- Still **open team decisions**: the database, anonymous identity vs accounts, hosting, and where
+  any routing engine runs. Do not add a database driver, JPA, an auth library, a Firebase project,
+  infrastructure files or other dependencies without Adam's explicit go-ahead.
 - Whatever is chosen must enforce the committee rule server-side: a task cannot be completed while
   its dependency is incomplete, checked inside one transaction that also reads the prerequisite
   tasks (no unlocked prerequisite reads).
