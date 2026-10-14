@@ -14,15 +14,19 @@ completion between participants, and refuse to complete a task whose dependency 
 ## Branches
 
 ```
-adam | mohammad | hammam  --PR-->  test  --PR-->  review  --PR-->  main
+adam | mohammad | hammam  --auto-->  test  --auto-->  review  --PR (Adam)-->  main
 ```
 
-Adam merges `review` into `main`.
+Push to your personal branch. The **Pipeline** workflow merges the push into `test`, runs
+`check` (`./mvnw -B verify`) and `build` (the jar) on the merged code, and only if both pass
+moves `test` and `review` to that merge. A conflict or a failure changes nothing and GitHub emails
+you. Adam merges `review` into `main`.
 
 ## Rules
 
-1. Never push to `test`, `review` or `main`. Only pull requests.
-2. Merge the target branch into your personal branch before opening a PR.
+1. Never push to `test`, `review` or `main`. The pipeline moves `test` and `review`.
+2. On a merge conflict: `git fetch origin && git merge origin/test` on your branch, resolve,
+   push again.
 3. One feature per PR. Merge commits only. Never delete `test`, `review` or `main`.
 4. Never commit keys, service-account files, `.env` files or tokens.
 

@@ -1,0 +1,95 @@
+name: CI
+
+# The one definition of "check" and "build". It runs:
+#   - on every PR into test / review / main (the job names "check" and "build" are
+#     what branch protection requires, so do not rename them);
+#   - from pipeline.yml, on the merge of a personal branch into test, before that
+#     merge is pushed.
+# Do NOT add paths-ignore: a skipped required workflow leaves the PR blocked forever.
+on:
+  pull_request:
+    branches: [test, review, main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      base-sha:
+        description: If set, check the merge of head-sha into this commit instead of the triggering commit
+        type: string
+        default: ""
+      head-sha:
+        type: string
+        default: ""
+      message:
+        type: string
+        default: ""
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: "21"
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.base-sha == '' && 1 || 0 }}
+
+      - if: inputs.base-sha != ''
+        uses: ./.github/actions/merge-into
+        with:
+          base-sha: ${{ inputs.base-sha }}
+          head-sha: ${{ inputs.head-sha }}
+          message: ${{ inputs.message }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      # Compile and run every test.
+      - name: Verify
+        run: ./mvnw -B verify
+
+  build:
+    name: build
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ inputs.base-sha == '' && 1 || 0 }}
+
+      - if: inputs.base-sha != ''
+        uses: ./.github/actions/merge-into
+        with:
+          base-sha: ${{ inputs.base-sha }}
+          head-sha: ${{ inputs.head-sha }}
+          message: ${{ inputs.message }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Package jar
+        run: ./mvnw -B -DskipTests package
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: georeminder-backend-jar
+          path: target/*.jar
+          if-no-files-found: error
+          retention-days: 14

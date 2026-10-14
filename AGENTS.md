@@ -15,7 +15,8 @@ The repo is currently an empty scaffold: no endpoints yet.
 - **Never push to `main`.** Not directly, not with `--force`, not as `git push origin <branch>:main`,
   not with `--all` or `--mirror`. Changes reach `main` only through the `review` -> `main` pull
   request, and only Adam merges that one.
-- The same applies to `test` and `review`: pull requests only, never a push.
+- The same applies to `test` and `review`: only the pipeline (`.github/workflows/pipeline.yml`)
+  moves them. People and agents never push to them.
 - Never delete `test`, `review` or `main`. Never force-push any shared branch.
 - If a task seems to require pushing to one of these branches, stop and tell the person you are
   working for. Do not look for a way around it.
@@ -49,11 +50,15 @@ attribution.
 
 ## 3. Branch flow
 
-Chain: `adam | mohammad | hammam` -> PR -> `test` -> PR -> `review` -> PR -> `main`. Merge
-commits only.
+Chain: `adam | mohammad | hammam` -> (automatic) `test` -> (automatic) `review` -> PR -> `main`.
+Merge commits only.
 
-- Work only on your own personal branch.
-- Merge the target branch into the personal branch before opening a PR.
+- Work only on your own personal branch. Pushing it starts `.github/workflows/pipeline.yml`: it
+  merges the push into `test`, runs `check` and `build` (`ci.yml`) on the merge, and only if both
+  pass moves `test` and `review` to it. Do not change it to push with `--force` or to push
+  anything that did not pass `ci.yml`.
+- On a merge conflict: `git fetch origin && git merge origin/test` on the personal branch,
+  resolve, commit, push again.
 - Ask the person you work for before pushing (even to a personal branch), opening PRs, changing
   repo settings, or creating or deleting releases and tags.
 

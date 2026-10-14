@@ -1,0 +1,119 @@
+name: Pipeline
+
+# A push to a personal branch (adam / mohammad / hammam) runs:
+#   1. merge     merge the push into test. Conflict -> run fails and lists the files.
+#   2. ci        check + build (ci.yml) on that merged code. Failure -> run fails.
+#   3. promote   push the merge to test and move review to the same commit.
+# Nothing is pushed to test unless steps 1 and 2 passed, so test and review only
+# ever hold code that passed CI. A failed run changes nothing: fix, push again.
+# GitHub emails whoever pushed when a run fails.
+on:
+  push:
+    branches: [adam, mohammad, hammam]
+
+# A newer push to the same personal branch replaces the older run.
+concurrency:
+  group: pipeline-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  merge:
+    name: merge into test
+    if: github.event.deleted != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      # Empty when test does not exist yet: the first push creates test and review.
+      base-sha: ${{ steps.base.outputs.sha }}
+      sha: ${{ steps.merge.outputs.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: base
+        run: echo "sha=$(git rev-parse --verify -q origin/test || true)" >> "$GITHUB_OUTPUT"
+
+      - id: merge
+        if: steps.base.outputs.sha != ''
+        uses: ./.github/actions/merge-into
+        with:
+          base-sha: ${{ steps.base.outputs.sha }}
+          head-sha: ${{ github.sha }}
+          message: Merge ${{ github.ref_name }} into test
+
+  ci:
+    needs: merge
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      base-sha: ${{ needs.merge.outputs.base-sha }}
+      head-sha: ${{ github.sha }}
+      message: Merge ${{ github.ref_name }} into test
+
+  promote:
+    name: promote to test and review
+    needs: [merge, ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: merge
+        if: needs.merge.outputs.base-sha != ''
+        uses: ./.github/actions/merge-into
+        with:
+          base-sha: ${{ needs.merge.outputs.base-sha }}
+          head-sha: ${{ github.sha }}
+          message: Merge ${{ github.ref_name }} into test
+
+      - name: Push to test and review
+        env:
+          BASE_SHA: ${{ needs.merge.outputs.base-sha }}
+          TESTED_SHA: ${{ needs.merge.outputs.sha }}
+          BUILT_SHA: ${{ steps.merge.outputs.sha || github.sha }}
+        run: |
+          # First push ever: nothing to merge into, test and review get created at this commit.
+          if [ -z "$BASE_SHA" ]; then
+            git checkout --quiet --detach "$BUILT_SHA"
+          fi
+
+          if [ "$BUILT_SHA" != "$TESTED_SHA" ]; then
+            echo "::error::Merge result differs from the one CI checked ($BUILT_SHA vs $TESTED_SHA). Re-run all jobs."
+            exit 1
+          fi
+
+          if [ "$(git rev-parse --verify -q origin/test || true)" != "$BASE_SHA" ]; then
+            echo "::error::test changed while this run was going (another push landed first). Re-run all jobs."
+            exit 1
+          fi
+
+          if git rev-parse --verify -q origin/review > /dev/null &&
+             ! git merge-base --is-ancestor origin/review HEAD; then
+            echo "::error::review has commits that are not on test, so it cannot be moved forward. Tell Adam."
+            exit 1
+          fi
+
+          # --atomic: both branches move, or neither does. No --force: if test moved
+          # since this run started (someone else's run landed first), the push is rejected.
+          if ! git push --atomic origin HEAD:refs/heads/test HEAD:refs/heads/review; then
+            echo "::error::test changed while this run was going (another push landed first). Re-run all jobs."
+            exit 1
+          fi
+
+          {
+            echo "## Promoted"
+            echo
+            echo "\`${GITHUB_REF_NAME}\` is merged into **test** and **review** at \`${BUILT_SHA:0:7}\`."
+            echo
+            echo "The built jar is in this run's artifacts."
+            echo "If it passes the manual checklist, Adam merges review into main."
+          } >> "$GITHUB_STEP_SUMMARY"

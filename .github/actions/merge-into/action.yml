@@ -1,0 +1,62 @@
+name: Merge into target
+description: >
+  Merges one commit into another and leaves the result checked out. Author and
+  dates are pinned, so every job that runs this with the same inputs gets the
+  same commit SHA. On a conflict it fails and lists the conflicting files.
+  Needs a checkout with fetch-depth 0 first.
+
+inputs:
+  base-sha:
+    description: Commit of the branch being merged into (e.g. test)
+    required: true
+  head-sha:
+    description: Commit being merged in (e.g. the pushed personal branch)
+    required: true
+  message:
+    description: Merge commit message
+    required: true
+
+outputs:
+  sha:
+    description: The resulting commit
+    value: ${{ steps.merge.outputs.sha }}
+
+runs:
+  using: composite
+  steps:
+    - id: merge
+      shell: bash
+      env:
+        BASE_SHA: ${{ inputs.base-sha }}
+        HEAD_SHA: ${{ inputs.head-sha }}
+        MESSAGE: ${{ inputs.message }}
+      run: |
+        git checkout --quiet --detach "$BASE_SHA"
+
+        export GIT_AUTHOR_NAME="github-actions[bot]"
+        export GIT_AUTHOR_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+        export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+        export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+        export GIT_AUTHOR_DATE="$(git show -s --format=%cI "$HEAD_SHA")"
+        export GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+
+        if ! git merge --no-ff --no-edit -m "$MESSAGE" "$HEAD_SHA" > "$RUNNER_TEMP/merge.log" 2>&1; then
+          cat "$RUNNER_TEMP/merge.log"
+          conflicts="$(git diff --name-only --diff-filter=U)"
+          {
+            echo "## Merge conflict"
+            echo
+            echo "Your branch cannot be merged automatically. Conflicting files:"
+            echo
+            echo "$conflicts" | sed 's/^/- `/; s/$/`/'
+            echo
+            echo "Fix: \`git fetch origin && git merge origin/test\` on your branch,"
+            echo "resolve these files, commit, and push again."
+          } >> "$GITHUB_STEP_SUMMARY"
+          for f in $conflicts; do
+            echo "::error file=$f::Merge conflict in $f. Merge origin/test into your branch, resolve, push again."
+          done
+          exit 1
+        fi
+        cat "$RUNNER_TEMP/merge.log"
+        echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
