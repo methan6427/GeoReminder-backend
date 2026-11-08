@@ -36,8 +36,9 @@ Needs Node.js 20 or newer.
 
 ```
 npm ci          # install the test dependency (PGlite, an in-process Postgres)
-npm test        # run the SQL tests
+npm test        # run every test (SQL, bundler, sprint plan registry)
 npm run build   # write dist/schema.sql (all migrations in order)
+npm run sprints # rewrite docs/sprints/SPRINTS.md after editing docs/sprints/sprints.json
 ```
 
 ## Setup after cloning

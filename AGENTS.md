@@ -67,6 +67,10 @@ Merge commits only.
 
 - Short imperative subject line, 72 characters or fewer. Body only if the why is not obvious.
 - One logical change per commit, one feature per PR.
+- Commit IDs: the subject starts with the commit's ID from `docs/sprints/sprints.json`
+  (`SP01-C03 reject dependency cycles ...`). Every unit test the commit adds starts its name with
+  the ID in brackets (`[SP01-C03] ...`). In the same commit, set its status to `done` in
+  `sprints.json` and run `npm run sprints`. `npm test` fails if a done commit has no tagged test.
 - PR descriptions follow `.github/pull_request_template.md`. Plain text, no marketing language.
 
 ## 5. Backend scope
