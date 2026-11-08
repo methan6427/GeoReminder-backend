@@ -142,9 +142,32 @@ protocol details are the first suspect, not RLS.
 - `docs/GeoReminder_Sharing_Design.md` calls the migration `001_sharing.sql`; the file is
   `supabase/migrations/20261108000000_trip_sharing.sql`.
 
+### B3. README (SP01-C06, 8 Nov 2026)
+
+`README.md` now covers: contents of the repo, Node.js 22 (it said 20; `package.json` and CI need
+22), every npm command, the Supabase dashboard setup (anonymous sign-ins, running
+`dist/schema.sql`, the anonymous sign-in rate limit, which key to use and which never to use),
+verify-remote in bash and PowerShell, the API table with every function and error code, free plan
+limits, branches and rules.
+
+`tests/readme.test.mjs` keeps it in step: every `npm run` command exists and every script is
+documented, the Node version matches `engines`, no JWT, Supabase key or real project URL, every
+error code raised in the migrations and every app function is in the tables, and every repo path
+it mentions exists.
+
+Verified by running: `npm test` (86 tests, all passing; 7 are SP01-C06). Against the previous
+README, 4 of the 7 fail (missing scripts, Node 20, error codes, functions).
+
+Not verified: the free plan limits and the default anonymous sign-in rate limit were not checked
+on supabase.com on 8 Nov 2026; the README says to check the pricing page. The
+dashboard menu names (Authentication > Sign In / Providers, Rate Limits, Project Settings > API
+Keys) may have moved.
+
+SP01 is marked done: every commit in it is done. The live verify-remote run is still open (below).
+
 ## In progress
 
-- SP01-C06 (B3): full README (Supabase setup, tests, verify-remote, free-tier limits).
+Nothing. Waiting for "next".
 
 ## Next
 
