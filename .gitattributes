@@ -4,5 +4,8 @@
 *.yaml text eol=lf
 *.bat text eol=crlf
 .githooks/* text eol=lf
-/mvnw text eol=lf
+*.sql text eol=lf
+*.mjs text eol=lf
 *.cmd text eol=crlf
+*.json text eol=lf
+*.md text eol=lf

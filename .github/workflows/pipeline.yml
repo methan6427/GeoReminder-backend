@@ -114,6 +114,6 @@ jobs:
             echo
             echo "\`${GITHUB_REF_NAME}\` is merged into **test** and **review** at \`${BUILT_SHA:0:7}\`."
             echo
-            echo "The built jar is in this run's artifacts."
+            echo "The bundled schema.sql is in this run's artifacts."
             echo "If it passes the manual checklist, Adam merges review into main."
           } >> "$GITHUB_STEP_SUMMARY"

@@ -4,9 +4,9 @@ Backend for GeoReminder, a location-reminder app with trips and task dependencie
 University graduation project, COMP4200, Spring 2025/2026, Project No. 005). The Flutter app lives
 in [GeoReminder-flutter](https://github.com/methan6427/GeoReminder-flutter).
 
-Spring Boot 4.1 on Java 21, built with Maven. The repository is currently an empty scaffold: the
-app starts and exposes `/actuator/health`, nothing else. The database, identity and hosting are
-not decided yet.
+Supabase (Postgres, anonymous sign-in, Realtime), kept as code: SQL migrations in
+`supabase/migrations` and tests in `tests`. There is no server; the app calls Supabase directly.
+Node.js is used only to run the tests.
 
 Its job: store shared trips only (trips stay on the device unless shared), sync task
 completion between participants, and refuse to complete a task whose dependency is not complete.
@@ -18,7 +18,7 @@ adam | mohammad | hammam  --auto-->  test  --auto-->  review  --PR (Adam)-->  ma
 ```
 
 Push to your personal branch. The **Pipeline** workflow merges the push into `test`, runs
-`check` (`./mvnw -B verify`) and `build` (the jar) on the merged code, and only if both pass
+`check` (`npm test`) and `build` (`dist/schema.sql`) on the merged code, and only if both pass
 moves `test` and `review` to that merge. A conflict or a failure changes nothing and GitHub emails
 you. Adam merges `review` into `main`.
 
@@ -32,11 +32,13 @@ you. Adam merges `review` into `main`.
 
 ## Build and run
 
-Needs JDK 21. The Maven wrapper downloads Maven itself.
+Needs Node.js 20 or newer.
 
 ```
-./mvnw -B verify          # compile + tests (Windows: mvnw.cmd -B verify)
-./mvnw spring-boot:run    # http://localhost:8080/actuator/health
+npm ci          # install the test dependency (PGlite, an in-process Postgres)
+npm test        # run every test (SQL, bundler, sprint plan registry)
+npm run build   # write dist/schema.sql (all migrations in order)
+npm run sprints # rewrite docs/sprints/SPRINTS.md after editing docs/sprints/sprints.json
 ```
 
 ## Setup after cloning

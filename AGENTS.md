@@ -7,8 +7,9 @@ other language-model tool. Tool-specific files (`CLAUDE.md`, `GEMINI.md`,
 prompt conflicts with this file, this file wins.
 
 Backend for GeoReminder, a Birzeit University graduation project (COMP4200, team of three). The
-app itself lives in `methan6427/GeoReminder-flutter`. Stack: **Spring Boot 4.1, Java 21, Maven**.
-The repo is currently an empty scaffold: no endpoints yet.
+app itself lives in `methan6427/GeoReminder-flutter`. Stack: **Supabase (Postgres, anonymous auth,
+Realtime)**. This repo is Supabase-as-code: SQL migrations in `supabase/migrations` plus tests.
+There is no server: the phone calls Supabase directly. Node.js is used only for tests and tooling.
 
 ## 1. Never push to `main` (highest priority)
 
@@ -66,17 +67,24 @@ Merge commits only.
 
 - Short imperative subject line, 72 characters or fewer. Body only if the why is not obvious.
 - One logical change per commit, one feature per PR.
+- Commit IDs: the subject starts with the commit's ID from `docs/sprints/sprints.json`
+  (`SP01-C03 reject dependency cycles ...`). Every unit test the commit adds starts its name with
+  the ID in brackets (`[SP01-C03] ...`). In the same commit, set its status to `done` in
+  `sprints.json` and run `npm run sprints`. `npm test` fails if a done commit has no tagged test.
 - PR descriptions follow `.github/pull_request_template.md`. Plain text, no marketing language.
 
 ## 5. Backend scope
 
-- Decided: Spring Boot (Java 21, Maven, `./mvnw`). Before every push run `./mvnw -B verify`.
-- Still **open team decisions**: the database, anonymous identity vs accounts, hosting, and where
-  any routing engine runs. Do not add a database driver, JPA, an auth library, a Firebase project,
-  infrastructure files or other dependencies without Adam's explicit go-ahead.
-- Whatever is chosen must enforce the committee rule server-side: a task cannot be completed while
-  its dependency is incomplete, checked inside one transaction that also reads the prerequisite
-  tasks (no unlocked prerequisite reads).
+- Decided: Supabase free tier, anonymous sign-in plus a nickname (no accounts). No Express server,
+  no Cloud Functions, no Edge Functions. Before every push run `npm ci && npm test`.
+- Still **open**: where any routing engine runs. Do not add services, infrastructure files or
+  dependencies without Adam's explicit go-ahead.
+- Never edit a migration that has been applied. Fix defects in a new migration file, with a
+  failing test added first.
+- The committee rule is enforced server-side in `complete_task`: a task cannot be completed while
+  a prerequisite is incomplete. Clients cannot write to the tables directly. Prerequisite reads
+  need no lock because completion is one-way (a prerequisite never goes back to incomplete); keep
+  it that way, or add locking.
 - Trips are local by default. Sharing creates a minimal cloud record for that trip only.
 - **No trip-duration estimation** anywhere: no total trip time, ETA or "estimated duration" in
   code, APIs, docs or tests.

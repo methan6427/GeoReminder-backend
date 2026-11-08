@@ -17,11 +17,11 @@ coverage/
 
 # Editors and OS
 .idea/
+*.iml
 .vscode/
 .DS_Store
 Thumbs.db
 
-# Maven
-target/
-.mvn/wrapper/maven-wrapper.jar
-*.iml
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/

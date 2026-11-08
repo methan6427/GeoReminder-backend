@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "project": "GeoReminder",
+  "repos": {
+    "backend": "https://github.com/methan6427/GeoReminder-backend",
+    "flutter": "https://github.com/methan6427/GeoReminder-flutter"
+  },
+  "sprints": [
+    {
+      "id": "SP01",
+      "version": "0.1.0",
+      "title": "Backend foundation",
+      "goal": "Sharing schema on Supabase, tested in CI, with a script to check a real project.",
+      "status": "in-progress",
+      "screens": [],
+      "commits": [
+        { "id": "SP01-C01", "repo": "backend", "status": "done", "title": "Add Supabase sharing migration, SQL tests and design docs", "tests": "Share, join, cap of 10, code expiry, dependency rule in complete_task, stop_sharing." },
+        { "id": "SP01-C02", "repo": "backend", "status": "done", "title": "Replace the Spring Boot scaffold with Supabase-as-code", "tests": "Migration bundler: order, headers, unchanged bodies, exit codes." },
+        { "id": "SP01-C03", "repo": "backend", "status": "done", "title": "Reject dependency cycles and early completions in share_trip", "tests": "Self, direct and indirect cycles, diamond accepted, early completion rejected, table privileges." },
+        { "id": "SP01-C04", "repo": "backend", "status": "done", "title": "Add sprint plan and per-commit test registry", "tests": "Plan is valid; every done commit has tests tagged with its ID; SPRINTS.md matches the plan." },
+        { "id": "SP01-C05", "repo": "backend", "status": "planned", "title": "Add verify-remote script for a real Supabase project", "tests": "Offline unit tests of the script's checks; the live run needs Adam's project URL and anon key." },
+        { "id": "SP01-C06", "repo": "backend", "status": "planned", "title": "Write the backend README", "tests": "README lists the commands that exist in package.json and contains no keys." }
+      ]
+    },
+    {
+      "id": "SP02",
+      "version": "0.2.0",
+      "title": "App domain and local storage",
+      "goal": "Trips and tasks with prerequisites, saved on the phone, no UI yet.",
+      "status": "planned",
+      "screens": [],
+      "commits": [
+        { "id": "SP02-C01", "repo": "flutter", "status": "planned", "title": "Add commit-ID test registry to the app repo", "tests": "Every done app commit in the plan has a test whose name starts with its ID." },
+        { "id": "SP02-C02", "repo": "flutter", "status": "planned", "title": "Add Trip, Task and Place models with JSON round-trip", "tests": "Round-trip, unknown fields kept, bad input rejected." },
+        { "id": "SP02-C03", "repo": "flutter", "status": "planned", "title": "Add DependencyGraph with cycle detection", "tests": "Ready and blocked tasks, self, direct and indirect cycles, diamond." },
+        { "id": "SP02-C04", "repo": "flutter", "status": "planned", "title": "Add TripRepository with atomic writes and corrupt-file recovery", "tests": "Save and load, interrupted write keeps the old file, corrupt file recovered from backup." },
+        { "id": "SP02-C05", "repo": "flutter", "status": "planned", "title": "Add TaskCompletionService for solo trips", "tests": "Blocked task cannot be completed; completion is one-way and idempotent." },
+        { "id": "SP02-C06", "repo": "flutter", "status": "planned", "title": "Add versioned trip export and import format", "tests": "Export then import gives the same trips; older format versions upgrade; bad files rejected." }
+      ]
+    },
+    {
+      "id": "SP03",
+      "version": "0.3.0",
+      "title": "App shell, trips and suggested order",
+      "goal": "Create trips and tasks in the app and see a suggested visiting order.",
+      "status": "planned",
+      "screens": ["S05", "S05s", "S06", "S07", "S07s", "S08", "S11"],
+      "commits": [
+        { "id": "SP03-C01", "repo": "flutter", "status": "planned", "title": "Add app shell: state management, theme and bottom navigation", "tests": "Widget test of navigation between tabs; theme tokens match the design system." },
+        { "id": "SP03-C02", "repo": "flutter", "status": "planned", "title": "Add home trip list with empty, loading and error states", "tests": "Widget tests for each state." },
+        { "id": "SP03-C03", "repo": "flutter", "status": "planned", "title": "Add create and edit trip form", "tests": "Validation, save, cancel." },
+        { "id": "SP03-C04", "repo": "flutter", "status": "planned", "title": "Add trip details with locked-task state", "tests": "A locked task shows 'Complete <name> first' and cannot be ticked." },
+        { "id": "SP03-C05", "repo": "flutter", "status": "planned", "title": "Add task form with a prerequisite picker that rejects cycles", "tests": "Picker hides choices that would make a cycle." },
+        { "id": "SP03-C06", "repo": "flutter", "status": "planned", "title": "Add straight-line route provider and suggested order", "tests": "Haversine distances, order respects prerequisites, distance only." }
+      ]
+    },
+    {
+      "id": "SP04",
+      "version": "0.4.0",
+      "title": "Map and places",
+      "goal": "Pick places on a free map and search addresses.",
+      "status": "planned",
+      "screens": ["S09", "S10", "S15", "S15s"],
+      "commits": [
+        { "id": "SP04-C01", "repo": "flutter", "status": "planned", "title": "Add OpenStreetMap map widget with attribution", "tests": "Widget test that attribution is always shown." },
+        { "id": "SP04-C02", "repo": "flutter", "status": "planned", "title": "Add place picker", "tests": "Tap and drag set the place; radius is clamped." },
+        { "id": "SP04-C03", "repo": "flutter", "status": "planned", "title": "Add address search within the Nominatim usage policy", "tests": "At most one request per second, identifying User-Agent, results cached (fake HTTP client)." },
+        { "id": "SP04-C04", "repo": "flutter", "status": "planned", "title": "Add frequent places", "tests": "Save, rename, delete, reuse in a task." },
+        { "id": "SP04-C05", "repo": "flutter", "status": "planned", "title": "Add trip map with task pins and states", "tests": "Pin state follows task state (ready, locked, done)." }
+      ]
+    },
+    {
+      "id": "SP05",
+      "version": "0.5.0",
+      "title": "Geofencing and reminders",
+      "goal": "The phone reminds you when you arrive near a task.",
+      "status": "planned",
+      "screens": ["S03a", "S03b", "S03d", "S16a", "S16b", "S17"],
+      "commits": [
+        { "id": "SP05-C01", "repo": "flutter", "status": "planned", "title": "Add permission screens for location, notifications and battery", "tests": "Each permission state (granted, denied, permanently denied) leads to the right screen." },
+        { "id": "SP05-C02", "repo": "flutter", "status": "planned", "title": "Add geofence service with region-limit handling", "tests": "Nearest ready tasks are registered first when over the platform limit (fake geofence API)." },
+        { "id": "SP05-C03", "repo": "flutter", "status": "planned", "title": "Add arrival notification and full-screen alert", "tests": "Entering a region of a ready task notifies once." },
+        { "id": "SP05-C04", "repo": "flutter", "status": "planned", "title": "Add blocked dialog for arriving at a locked task", "tests": "Arriving at a locked task names the prerequisite." },
+        { "id": "SP05-C05", "repo": "flutter", "status": "planned", "title": "Re-register geofences after reboot and app update", "tests": "Restore from storage registers the same regions." }
+      ]
+    },
+    {
+      "id": "SP06",
+      "version": "0.6.0",
+      "title": "Trip Mode",
+      "goal": "A focused driving screen with spoken prompts. No ETA or trip duration.",
+      "status": "planned",
+      "screens": ["S03c", "S18", "S19"],
+      "commits": [
+        { "id": "SP06-C01", "repo": "flutter", "status": "planned", "title": "Add trip status state machine", "tests": "Allowed and rejected transitions between planned, active, paused and finished." },
+        { "id": "SP06-C02", "repo": "flutter", "status": "planned", "title": "Add Trip Mode screen with next task and distance", "tests": "Shows next ready task and straight-line distance; never shows a time estimate." },
+        { "id": "SP06-C03", "repo": "flutter", "status": "planned", "title": "Add spoken prompts", "tests": "Prompt text per event (fake text-to-speech)." },
+        { "id": "SP06-C04", "repo": "flutter", "status": "planned", "title": "Offer Trip Mode when the phone connects to the car", "tests": "Car connect event shows the prompt once per trip (fake Bluetooth)." }
+      ]
+    },
+    {
+      "id": "SP07",
+      "version": "0.7.0",
+      "title": "Identity and sharing",
+      "goal": "Share a trip with a code and join someone else's trip.",
+      "status": "planned",
+      "screens": ["S04", "S20a", "S20b", "S20c", "S20s", "S21", "S21s", "S23"],
+      "commits": [
+        { "id": "SP07-C01", "repo": "flutter", "status": "planned", "title": "Configure the Supabase client from build-time defines", "tests": "Missing URL or key gives a clear error; nothing is read from files in git." },
+        { "id": "SP07-C02", "repo": "flutter", "status": "planned", "title": "Add anonymous sign-in and nickname", "tests": "Nickname validation; session reused on restart (fake client)." },
+        { "id": "SP07-C03", "repo": "flutter", "status": "planned", "title": "Add share trip flow and join code screen", "tests": "share_trip payload matches the local trip; server errors map to messages." },
+        { "id": "SP07-C04", "repo": "flutter", "status": "planned", "title": "Add join by code", "tests": "Code normalised; INVALID_OR_EXPIRED_CODE and TRIP_FULL shown as messages." },
+        { "id": "SP07-C05", "repo": "flutter", "status": "planned", "title": "Add stop sharing and the share error screen", "tests": "Stop sharing keeps the local trip; NOT_ALLOWED after stop is handled." },
+        { "id": "SP07-C06", "repo": "backend", "status": "planned", "title": "Apply the answers in QUESTIONS.md in a new migration", "tests": "SQL tests for whatever is decided (input limits, task order, leave_trip)." }
+      ]
+    },
+    {
+      "id": "SP08",
+      "version": "0.8.0",
+      "title": "Shared completion and offline queue",
+      "goal": "Everyone on a shared trip sees completions live, also after being offline.",
+      "status": "planned",
+      "screens": ["S22"],
+      "commits": [
+        { "id": "SP08-C01", "repo": "flutter", "status": "planned", "title": "Add shared trip details from get_trip", "tests": "Snapshot mapped to the local model, both key styles accepted." },
+        { "id": "SP08-C02", "repo": "flutter", "status": "planned", "title": "Complete shared tasks through complete_task", "tests": "BLOCKED shown as the locked-task message; repeat completion is harmless." },
+        { "id": "SP08-C03", "repo": "flutter", "status": "planned", "title": "Add live task updates", "tests": "Incoming change updates one task; unknown task triggers a refetch (fake channel)." },
+        { "id": "SP08-C04", "repo": "flutter", "status": "planned", "title": "Add offline completion queue with retry", "tests": "Queued while offline, sent once online, kept across restart, dropped on NOT_ALLOWED." }
+      ]
+    },
+    {
+      "id": "SP09",
+      "version": "0.9.0",
+      "title": "Calendar and repeating trips",
+      "goal": "Plan trips on dates and repeat them.",
+      "status": "planned",
+      "screens": ["S12", "S13"],
+      "commits": [
+        { "id": "SP09-C01", "repo": "flutter", "status": "planned", "title": "Add repeat rules with next-occurrence calculation", "tests": "Daily, weekly, monthly, end of month, time zone changes." },
+        { "id": "SP09-C02", "repo": "flutter", "status": "planned", "title": "Add calendar screen", "tests": "Trips appear on the right days, including repeats." },
+        { "id": "SP09-C03", "repo": "flutter", "status": "planned", "title": "Add schedule sheet", "tests": "Pick date, time and repeat; validation." },
+        { "id": "SP09-C04", "repo": "flutter", "status": "planned", "title": "Add date reminders for scheduled trips", "tests": "Reminder scheduled and cancelled with the trip (fake notifications)." }
+      ]
+    },
+    {
+      "id": "SP10",
+      "version": "0.10.0",
+      "title": "History and export or import",
+      "goal": "See finished trips and move data between phones.",
+      "status": "planned",
+      "screens": ["S14", "S14b", "S24"],
+      "commits": [
+        { "id": "SP10-C01", "repo": "flutter", "status": "planned", "title": "Add history list", "tests": "Finished trips listed newest first; filters." },
+        { "id": "SP10-C02", "repo": "flutter", "status": "planned", "title": "Add history details", "tests": "Shows completed tasks with who and when completed them." },
+        { "id": "SP10-C03", "repo": "flutter", "status": "planned", "title": "Add export and import screen", "tests": "Import preview, duplicate trips handled, bad file message." }
+      ]
+    },
+    {
+      "id": "SP11",
+      "version": "0.11.0",
+      "title": "Road distance",
+      "goal": "Suggested order by road distance from a free source, straight line as fallback.",
+      "status": "planned",
+      "screens": ["S11"],
+      "commits": [
+        { "id": "SP11-C01", "repo": "flutter", "status": "planned", "title": "Add road-distance route provider", "tests": "Distance matrix parsed; order respects prerequisites (fake HTTP client). Source still to be decided." },
+        { "id": "SP11-C02", "repo": "flutter", "status": "planned", "title": "Fall back to straight-line distance on error or offline", "tests": "Timeout, error and offline all fall back without blocking the UI." },
+        { "id": "SP11-C03", "repo": "flutter", "status": "planned", "title": "Cache road distances and limit requests", "tests": "Same places reuse the cache; request rate stays within the source's limits." }
+      ]
+    },
+    {
+      "id": "SP12",
+      "version": "0.12.0",
+      "title": "Settings, legal and data deletion",
+      "goal": "Settings, terms, privacy, delete all data, about.",
+      "status": "planned",
+      "screens": ["S25", "S26", "S27", "S28", "S29", "S30"],
+      "commits": [
+        { "id": "SP12-C01", "repo": "flutter", "status": "planned", "title": "Add settings screen", "tests": "Each setting saved and applied." },
+        { "id": "SP12-C02", "repo": "flutter", "status": "planned", "title": "Add terms, privacy and accounts-later screens", "tests": "Screens open from settings and first run." },
+        { "id": "SP12-C03", "repo": "backend", "status": "planned", "title": "Add delete_my_data function", "tests": "Owner trips removed, participation removed, other users' data untouched." },
+        { "id": "SP12-C04", "repo": "flutter", "status": "planned", "title": "Add delete all data", "tests": "Local files, geofences, notifications and the cloud record are removed." },
+        { "id": "SP12-C05", "repo": "flutter", "status": "planned", "title": "Add about screen with licences and map attribution", "tests": "Version shown; OpenStreetMap attribution present." }
+      ]
+    },
+    {
+      "id": "SP13",
+      "version": "1.0.0",
+      "title": "First run and release",
+      "goal": "Splash and welcome, final design pass, release build for Android.",
+      "status": "planned",
+      "screens": ["S01", "S02"],
+      "commits": [
+        { "id": "SP13-C01", "repo": "flutter", "status": "planned", "title": "Add splash and welcome screens", "tests": "First run shows welcome once; later runs go to home." },
+        { "id": "SP13-C02", "repo": "flutter", "status": "planned", "title": "Accessibility pass", "tests": "Semantics labels on all actions; layouts hold at large text sizes." },
+        { "id": "SP13-C03", "repo": "flutter", "status": "planned", "title": "Match every screen state to the design", "tests": "Golden tests for the main screens." },
+        { "id": "SP13-C04", "repo": "flutter", "status": "planned", "title": "Set release app ID, icon and version", "tests": "Version in the app matches the sprint version." },
+        { "id": "SP13-C05", "repo": "flutter", "status": "planned", "title": "Add end-to-end smoke test", "tests": "Create trip, add dependent tasks, complete in order, history." }
+      ]
+    },
+    {
+      "id": "SP14",
+      "version": "1.1.0",
+      "title": "iOS",
+      "goal": "Run on iPhone. Testing on devices needs a Mac; App Store or TestFlight needs a paid Apple account.",
+      "status": "planned",
+      "screens": [],
+      "commits": [
+        { "id": "SP14-C01", "repo": "flutter", "status": "planned", "title": "Add iOS permission texts and background modes", "tests": "Info.plist keys present (checked in a test)." },
+        { "id": "SP14-C02", "repo": "flutter", "status": "planned", "title": "Adapt geofencing and notifications for iOS", "tests": "Platform-specific limits handled (fake platform)." },
+        { "id": "SP14-C03", "repo": "flutter", "status": "planned", "title": "Add iOS build to CI", "tests": "Debug build without signing passes on a macOS runner." }
+      ]
+    }
+  ]
+}
