@@ -1,0 +1,66 @@
+@startuml
+title GeoReminder ERD: shared-trip database (Supabase Postgres)
+hide circle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam defaultFontName Helvetica
+skinparam entity {
+  BackgroundColor #F5F8FA
+  BorderColor #0B3D5C
+}
+
+entity "auth.users\n(managed by Supabase,\nanonymous sign-in)" as users {
+  * id : uuid <<PK>>
+  --
+  is_anonymous : boolean
+}
+
+entity "trips" as trips {
+  * id : uuid <<PK>>
+  --
+  owner : uuid <<ref users.id>>
+  title : text
+  join_code : text <<unique>>
+  join_code_expires_at : timestamptz
+  created_at : timestamptz
+}
+
+entity "participants" as participants {
+  * trip_id : uuid <<PK, FK>>
+  * user_id : uuid <<PK, ref users.id>>
+  --
+  nickname : text
+  joined_at : timestamptz
+}
+
+entity "tasks" as tasks {
+  * id : uuid <<PK>>
+  --
+  trip_id : uuid <<FK>>
+  data : jsonb
+  depends_on : uuid[]
+  completed : boolean
+  completed_by : uuid <<ref users.id>>
+  completed_at : timestamptz
+}
+
+users ||--o{ trips : "owns"
+users ||--o{ participants : "joins as"
+trips ||--o{ participants : "has (max 10)"
+trips ||--o{ tasks : "contains"
+tasks }o..o{ tasks : "depends_on\n(array of task ids,\nsame trip)"
+users |o..o{ tasks : "completed_by"
+
+note bottom of tasks
+  data (jsonb) holds the task fields the app already
+  stores locally: title, place (lat, lng), radius,
+  trigger (arrive/exit), notes. The server never reads it.
+  completed is one-way (never set back to false).
+end note
+
+note bottom of users
+  trips.owner, participants.user_id and tasks.completed_by
+  hold auth user ids. They are plain uuid columns, not
+  enforced foreign keys.
+end note
+@enduml

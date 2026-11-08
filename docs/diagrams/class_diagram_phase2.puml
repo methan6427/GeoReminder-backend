@@ -1,0 +1,164 @@
+@startuml
+title GeoReminder class diagram, Phase 2 (after sharing)
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Helvetica
+skinparam class {
+  BackgroundColor #F5F8FA
+  BorderColor #0B3D5C
+  BackgroundColor<<new>> #FFF0D6
+  BorderColor<<new>> #E8871E
+}
+skinparam packageStyle rectangle
+
+package "Domain (stored locally as JSON)" {
+  class Trip {
+    id : String
+    title : String
+    notes : String
+    status : TripStatus
+    isShared : boolean
+    scheduledAt : DateTime
+    repeatRule : RepeatRule
+  }
+  class Task {
+    id : String
+    title : String
+    latitude : double
+    longitude : double
+    radiusMeters : int
+    trigger : TriggerType
+    dependsOn : List<String>
+    completed : boolean
+    completedBy : String
+    completedAt : DateTime
+  }
+  class FrequentPlace {
+    id : String
+    name : String
+    latitude : double
+    longitude : double
+  }
+  enum TripStatus {
+    planned
+    active
+    completed
+    cancelled
+  }
+  enum TriggerType {
+    arrive
+    exit
+    both
+  }
+  class Participant <<new>> {
+    userId : String
+    nickname : String
+  }
+}
+
+package "Logic" {
+  class TripPlanner {
+    suggestOrder(trip, provider) : List<Task>
+  }
+  interface RouteProvider {
+    distanceMeters(a, b) : double
+  }
+  class StraightLineRouteProvider
+  class DependencyGraph <<new>> {
+    hasCycle(tasks) : boolean
+    isBlocked(task, tasks) : boolean
+    blockedBy(task, tasks) : List<Task>
+  }
+  class TaskCompletionService <<new>> {
+    complete(trip, task) : CompletionResult
+  }
+}
+
+package "Device services" {
+  class GeofenceService {
+    register(task)
+    unregister(task)
+    onEvent(callback)
+  }
+  class NotificationService {
+    show(task, event)
+  }
+  class BluetoothService {
+    onCarConnected(callback)
+  }
+  class TripMode {
+    start(trip)
+    stop()
+    speak(task)
+  }
+}
+
+package "Data" {
+  class LocalStorage {
+    readTrips() : List<Trip>
+    writeTrips(trips)
+    exportTrip(trip) : File
+    importTrip(file) : Trip
+  }
+  class IdentityService <<new>> {
+    ensureSignedIn()
+    nickname : String
+    userId : String
+  }
+  class SharingService <<new>> {
+    share(trip) : String
+    refreshJoinCode(tripId) : String
+    join(code, nickname) : Trip
+    fetch(tripId) : Trip
+    complete(taskId)
+    watch(tripId, onChange)
+    stopSharing(tripId)
+  }
+  class CompletionQueue <<new>> {
+    enqueue(taskId)
+    flush()
+  }
+}
+
+class "Supabase\n(Postgres + Realtime)" as Supabase <<external>> {
+  share_trip()
+  join_trip()
+  get_trip()
+  complete_task()
+  refresh_join_code()
+  stop_sharing()
+}
+
+Trip "1" *-- "0..*" Task
+Trip --> TripStatus
+Task --> TriggerType
+Trip "1" o-- "0..*" Participant : shared trips only
+Task "0..*" --> "0..*" Task : dependsOn
+
+TripPlanner ..> RouteProvider
+StraightLineRouteProvider ..|> RouteProvider
+TripPlanner ..> DependencyGraph
+
+TaskCompletionService ..> DependencyGraph
+TaskCompletionService ..> LocalStorage
+TaskCompletionService ..> SharingService : shared trips
+TaskCompletionService ..> CompletionQueue : offline, no prerequisites
+
+GeofenceService ..> NotificationService : event
+GeofenceService ..> TripMode
+BluetoothService ..> TripMode : car connected
+TripMode ..> TripPlanner
+TripMode ..> TaskCompletionService
+
+LocalStorage ..> Trip
+SharingService ..> IdentityService
+SharingService ..> Supabase
+CompletionQueue ..> SharingService
+CompletionQueue ..> LocalStorage
+
+note right of Trip
+  Removed in Phase 2: estimated total
+  duration (UR-10, SR-9). Route data
+  (SR-10) stays, for ordering only.
+end note
+@enduml

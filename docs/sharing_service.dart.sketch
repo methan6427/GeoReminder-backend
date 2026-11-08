@@ -1,0 +1,79 @@
+// UNTESTED SKETCH (not compiled; written against the supabase_flutter v2 API as I know it).
+// The SQL in 001_sharing.sql IS tested; this client layer is not. Check method names against
+// the supabase_flutter version you install.
+//
+// pubspec: supabase_flutter: ^2.0.0
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class BlockedByDependency implements Exception {}
+class ShareError implements Exception { final String code; ShareError(this.code); }
+
+class SharingService {
+  final SupabaseClient _db = Supabase.instance.client;
+
+  /// Call once at app start. Creates (or restores) an anonymous user, no email or password.
+  Future<void> ensureSignedIn() async {
+    if (_db.auth.currentUser == null) {
+      await _db.auth.signInAnonymously();
+    }
+  }
+
+  /// One-time upload of a local trip (the same JSON map you already store). Returns the join code.
+  Future<String> share(Map<String, dynamic> localTrip, String nickname) async {
+    final code = await _rpc('share_trip', {'p_trip': localTrip, 'p_nickname': nickname});
+    return code as String;
+  }
+
+  Future<String> newJoinCode(String tripId) async =>
+      await _rpc('refresh_join_code', {'p_trip': tripId}) as String;
+
+  /// Returns the full trip snapshot as JSON; write it to local storage with isShared = true.
+  Future<Map<String, dynamic>> join(String code, String nickname) async =>
+      Map<String, dynamic>.from(await _rpc('join_trip', {'p_code': code, 'p_nickname': nickname}));
+
+  Future<Map<String, dynamic>> fetch(String tripId) async =>
+      Map<String, dynamic>.from(await _rpc('get_trip', {'p_trip': tripId}));
+
+  /// Throws BlockedByDependency when a prerequisite is not complete yet.
+  Future<void> complete(String taskId) async {
+    try {
+      await _rpc('complete_task', {'p_task': taskId});
+    } on ShareError catch (e) {
+      if (e.code == 'BLOCKED') throw BlockedByDependency();
+      rethrow;
+    }
+  }
+
+  /// Realtime is only a "something changed" ping. On every event, re-fetch the whole trip.
+  /// That keeps the logic trivial and means a missed event is healed by the next one (or by a reconnect fetch).
+  RealtimeChannel watch(String tripId, void Function() onChange) {
+    return _db
+        .channel('trip-$tripId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'tasks',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'trip_id',
+            value: tripId,
+          ),
+          callback: (_) => onChange(),
+        )
+        .subscribe();
+  }
+
+  Future<dynamic> _rpc(String fn, Map<String, dynamic> params) async {
+    try {
+      return await _db.rpc(fn, params: params);
+    } on PostgrestException catch (e) {
+      // our functions raise plain codes: BLOCKED, NOT_ALLOWED, INVALID_OR_EXPIRED_CODE, TRIP_FULL, ...
+      throw ShareError(e.message);
+    }
+  }
+}
+
+// Offline queue (dependency-free tasks only): keep a list of task ids in a local JSON file,
+// and on reconnect call complete(id) for each, then clear the list. complete() is idempotent,
+// so replaying twice is harmless. A task WITH prerequisites is not completable offline on a shared trip:
+// disable its button until online.

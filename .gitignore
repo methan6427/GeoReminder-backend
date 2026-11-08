@@ -21,6 +21,10 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
+
 # Maven
 target/
 .mvn/wrapper/maven-wrapper.jar
