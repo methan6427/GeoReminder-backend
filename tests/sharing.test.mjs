@@ -3,17 +3,22 @@ import fs from 'node:fs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-const sql = fs.readFileSync(new URL('../supabase/migrations/20261108000000_trip_sharing.sql', import.meta.url), 'utf8')
-  .replace('alter publication supabase_realtime add table tasks;', '-- (publication line skipped in local test)');
+// Every migration, in filename order, exactly as Supabase would apply them.
+const migrationsDir = new URL('../supabase/migrations/', import.meta.url);
+const migrations = fs.readdirSync(migrationsDir).filter((f) => f.endsWith('.sql')).sort()
+  .map((f) => fs.readFileSync(new URL(f, migrationsDir), 'utf8')
+    .replace('alter publication supabase_realtime add table tasks;', '-- (publication line skipped in local test)'));
 
 const db = new PGlite();
-// Minimal stand-ins for what Supabase provides.
+// Minimal stand-ins for what Supabase provides, including its default grant of every
+// privilege on new public tables to anon and authenticated.
 await db.exec(`
   create role anon; create role authenticated;
   create schema auth;
   create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('app.uid', true), '')::uuid $$;
+  alter default privileges in schema public grant all on tables to anon, authenticated;
 `);
-await db.exec(sql);
+for (const sql of migrations) await db.exec(sql);
 
 const A = '00000000-0000-0000-0000-00000000000a';
 const B = '00000000-0000-0000-0000-00000000000b';
@@ -136,5 +141,56 @@ await as(A);
 await call('select stop_sharing($1)', [trip]);
 r = await call(`select (select count(*) from trips where id = $1)::int as a, (select count(*) from tasks where trip_id = $1)::int as b, (select count(*) from participants where trip_id = $1)::int as c`, [trip]);
 check('owner stop_sharing removes trip, tasks, participants', r.rows[0].a === 0 && r.rows[0].b === 0 && r.rows[0].c === 0, JSON.stringify(r));
+
+// --- found in review (fixed in 20261108000100_share_trip_checks.sql)
+commitId = 'SP01-C03';
+const tripLeft = async (id) => (await call('select count(*)::int as n from trips where id = $1', [id])).rows[0].n;
+await as(A);
+
+const selfDep = { id: '77777777-7777-7777-7777-777777777770', title: 'Self',
+  tasks: [{ id: '77777777-7777-7777-7777-777777777771', dependsOn: ['77777777-7777-7777-7777-777777777771'] }] };
+r = await call('select share_trip($1::jsonb, $2) as code', [JSON.stringify(selfDep), 'Adam']);
+check('a task that depends on itself is rejected', !r.ok && r.err.includes('DEPENDENCY_CYCLE'), JSON.stringify(r));
+check('...and nothing from the self-dependency share is left behind', await tripLeft(selfDep.id) === 0);
+
+const direct = { id: '77777777-7777-7777-7777-777777777780', title: 'Direct cycle',
+  tasks: [{ id: '77777777-7777-7777-7777-777777777781', dependsOn: ['77777777-7777-7777-7777-777777777782'] },
+          { id: '77777777-7777-7777-7777-777777777782', dependsOn: ['77777777-7777-7777-7777-777777777781'] }] };
+r = await call('select share_trip($1::jsonb, $2) as code', [JSON.stringify(direct), 'Adam']);
+check('a direct cycle (1 <-> 2) is rejected', !r.ok && r.err.includes('DEPENDENCY_CYCLE'), JSON.stringify(r));
+
+const indirect = { id: '77777777-7777-7777-7777-777777777790', title: 'Indirect cycle',
+  tasks: [{ id: '77777777-7777-7777-7777-777777777791', dependsOn: ['77777777-7777-7777-7777-777777777793'] },
+          { id: '77777777-7777-7777-7777-777777777792', dependsOn: ['77777777-7777-7777-7777-777777777791'] },
+          { id: '77777777-7777-7777-7777-777777777793', dependsOn: ['77777777-7777-7777-7777-777777777792'] },
+          { id: '77777777-7777-7777-7777-777777777794', dependsOn: [] }] };
+r = await call('select share_trip($1::jsonb, $2) as code', [JSON.stringify(indirect), 'Adam']);
+check('an indirect cycle (1 -> 3 -> 2 -> 1) is rejected', !r.ok && r.err.includes('DEPENDENCY_CYCLE'), JSON.stringify(r));
+check('...and nothing from the indirect-cycle share is left behind', await tripLeft(indirect.id) === 0);
+
+const diamond = { id: '88888888-8888-8888-8888-888888888880', title: 'Diamond',
+  tasks: [{ id: '88888888-8888-8888-8888-888888888881', dependsOn: [] },
+          { id: '88888888-8888-8888-8888-888888888882', dependsOn: ['88888888-8888-8888-8888-888888888881'] },
+          { id: '88888888-8888-8888-8888-888888888883', dependsOn: ['88888888-8888-8888-8888-888888888881'] },
+          { id: '88888888-8888-8888-8888-888888888884', dependsOn: ['88888888-8888-8888-8888-888888888882', '88888888-8888-8888-8888-888888888883'] }] };
+r = await call('select share_trip($1::jsonb, $2) as code', [JSON.stringify(diamond), 'Adam']);
+check('a diamond (shared prerequisite, no cycle) is still accepted', r.ok, JSON.stringify(r));
+
+const doneEarly = { id: '99999999-9999-9999-9999-999999999990', title: 'Done early',
+  tasks: [{ id: '99999999-9999-9999-9999-999999999991', completed: false, dependsOn: [] },
+          { id: '99999999-9999-9999-9999-999999999992', completed: true, dependsOn: ['99999999-9999-9999-9999-999999999991'] }] };
+r = await call('select share_trip($1::jsonb, $2) as code', [JSON.stringify(doneEarly), 'Adam']);
+check('a task marked complete before its prerequisite is rejected', !r.ok && r.err.includes('BLOCKED'), JSON.stringify(r));
+check('...and nothing from the early-completion share is left behind', await tripLeft(doneEarly.id) === 0);
+
+for (const role of ['anon', 'authenticated']) {
+  for (const table of ['trips', 'participants', 'tasks']) {
+    r = await call(`select has_table_privilege($1, $2, 'SELECT') as s,
+      has_table_privilege($1, $2, 'INSERT') or has_table_privilege($1, $2, 'UPDATE') or has_table_privilege($1, $2, 'DELETE')
+      or has_table_privilege($1, $2, 'TRUNCATE') or has_table_privilege($1, $2, 'REFERENCES') or has_table_privilege($1, $2, 'TRIGGER') as w`,
+      [role, `public.${table}`]);
+    check(`${role} can only select from ${table} (no write, truncate, references or trigger)`, r.ok && r.rows[0].s && !r.rows[0].w, JSON.stringify(r));
+  }
+}
 
 await db.close();
