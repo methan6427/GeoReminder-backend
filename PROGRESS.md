@@ -39,10 +39,54 @@ Verified by running: `npm ci`, `npm test` after each commit (26, then 31, then 4
 passing; at SP01-C03, 13 of its tests fail without the fix migration), `npm run build`. The
 registry test fails as expected when a commit is marked done with no tagged test.
 
-Not verified: CI on GitHub. It cannot run locally. `ci.yml` does not run on push by itself:
-`pipeline.yml` runs on a push to `adam`, `mohammad` or `hammam` and calls `ci.yml` (`check`,
-then `build`). `ci.yml` also runs on pull requests into `test`, `review` and `main`. Confirm on
-the first push that both jobs go green.
+CI on GitHub: verified at SP01-C04. The Pipeline run on `adam` passed (merge, check, build,
+promote) and `test` and `review` moved to the merge.
+
+### B2. `scripts/verify-remote.mjs` (SP01-C05, 8 Nov 2026)
+
+Checks a real Supabase project for what `npm test` cannot see: row-level security and table
+privileges as real users meet them through the REST API, and Realtime. No new dependency: it
+uses Node 22's built-in `fetch` and `WebSocket`.
+
+```
+SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<anon key> npm run verify-remote
+```
+
+It signs in three anonymous users (owner, joiner, stranger), shares a two-task trip (task 2
+needs task 1), then checks, each with its own PASS or FAIL line:
+
+- join with the code; stranger gets `NOT_ALLOWED` from `get_trip` and `complete_task`;
+- RLS reads: the participant sees the tasks (control), the stranger sees no rows in `trips`,
+  `participants` or `tasks`;
+- direct writes refused: stranger insert into `participants` and `tasks`, update and delete of a
+  task, delete of the trip; the participant cannot set `completed` directly either (that would
+  skip `complete_task`); then the trip is checked unchanged;
+- `BLOCKED` for a task whose prerequisite is incomplete;
+- Realtime: participant and stranger both subscribe to `tasks` filtered by the trip, as the app
+  does; the owner completes task 1; the participant must get the `UPDATE`, the stranger must get
+  nothing (it waits 3 s more after the participant's event);
+- the dependent task then completes;
+- cleanup, always (also after a failure): Realtime closed first, `stop_sharing`, then `get_trip`
+  must say `NOT_ALLOWED`.
+
+Exit 0 when every check passes, 1 when any fails, 2 when `SUPABASE_URL` or `SUPABASE_ANON_KEY`
+is missing (no request is made). The anon key and user tokens are replaced with `<redacted>` in
+the output. Each run leaves 3 anonymous users in Authentication > Users; their ids are printed.
+
+Verified by running: `npm test` (79 tests, all passing; 20 are SP01-C05). The script's tests run
+it against an in-memory fake Supabase (`tests/fake-supabase.mjs`): the fake that follows the
+rules passes all 24 checks, and each broken rule (no `BLOCKED`, RLS leak, write privileges not
+revoked, Realtime leak to the stranger, no Realtime events, refused channel join, `stop_sharing`
+doing nothing, anonymous sign-ins off, network error mid-run) fails its check with exit 1. Two
+deliberate defects in the script (refusals always passing, no redaction) each made tests fail.
+`npm run verify-remote` with no variables exits 2.
+
+Not verified: a run against a real Supabase project. Not run, because there are no credentials
+yet. The REST and Auth request shapes follow PostgREST and Supabase Auth. The Realtime messages
+(Phoenix protocol `vsn=1.0.0`, `phx_join` with `postgres_changes` and `access_token`, readiness
+from the `system` message "Subscribed to PostgreSQL") follow the protocol the Supabase client
+libraries use; they have not been tested against the live server. If the live run fails on the subscribe check alone, the
+protocol details are the first suspect, not RLS.
 
 ## SQL review of `20261108000000_trip_sharing.sql`
 
@@ -98,12 +142,34 @@ the first push that both jobs go green.
 - `docs/GeoReminder_Sharing_Design.md` calls the migration `001_sharing.sql`; the file is
   `supabase/migrations/20261108000000_trip_sharing.sql`.
 
+### B3. README (SP01-C06, 8 Nov 2026)
+
+`README.md` now covers: contents of the repo, Node.js 22 (it said 20; `package.json` and CI need
+22), every npm command, the Supabase dashboard setup (anonymous sign-ins, running
+`dist/schema.sql`, the anonymous sign-in rate limit, which key to use and which never to use),
+verify-remote in bash and PowerShell, the API table with every function and error code, free plan
+limits, branches and rules.
+
+`tests/readme.test.mjs` keeps it in step: every `npm run` command exists and every script is
+documented, the Node version matches `engines`, no JWT, Supabase key or real project URL, every
+error code raised in the migrations and every app function is in the tables, and every repo path
+it mentions exists.
+
+Verified by running: `npm test` (86 tests, all passing; 7 are SP01-C06). Against the previous
+README, 4 of the 7 fail (missing scripts, Node 20, error codes, functions).
+
+Not verified: the free plan limits and the default anonymous sign-in rate limit were not checked
+on supabase.com on 8 Nov 2026; the README says to check the pricing page. The
+dashboard menu names (Authentication > Sign In / Providers, Rate Limits, Project Settings > API
+Keys) may have moved.
+
+SP01 is marked done: every commit in it is done. The live verify-remote run is still open (below).
+
 ## In progress
 
 Nothing. Waiting for "next".
 
 ## Next
 
-- SP01-C05 (B2): `scripts/verify-remote.mjs` (two anonymous users plus a stranger, join,
-  `BLOCKED`, RLS, Realtime, cleanup). Not run without credentials.
-- SP01-C06 (B3): full README (Supabase setup, tests, verify-remote, free-tier limits).
+- Live run of `npm run verify-remote` against the real project (needs the project URL and anon
+  key from Adam).

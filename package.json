@@ -7,7 +7,8 @@
   "scripts": {
     "test": "node --test \"tests/*.test.mjs\"",
     "build": "node scripts/bundle-migrations.mjs",
-    "sprints": "node scripts/sprints.mjs"
+    "sprints": "node scripts/sprints.mjs",
+    "verify-remote": "node scripts/verify-remote.mjs"
   },
   "engines": {
     "node": ">=22"
