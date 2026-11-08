@@ -31,7 +31,7 @@ permissions:
   contents: read
 
 env:
-  JAVA_VERSION: "21"
+  NODE_VERSION: "22"
 
 jobs:
   check:
@@ -50,15 +50,17 @@ jobs:
           head-sha: ${{ inputs.head-sha }}
           message: ${{ inputs.message }}
 
-      - uses: actions/setup-java@v4
+      # Supabase migrations: run the SQL tests against an in-process Postgres (PGlite).
+      - uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
-          cache: maven
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
-      # Compile and run every test.
-      - name: Verify
-        run: ./mvnw -B verify
+      - name: Install test dependencies
+        run: npm ci
+
+      - name: Tests
+        run: npm test
 
   build:
     name: build
@@ -77,19 +79,18 @@ jobs:
           head-sha: ${{ inputs.head-sha }}
           message: ${{ inputs.message }}
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
-          cache: maven
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Package jar
-        run: ./mvnw -B -DskipTests package
+      # All migrations, in order, as one file to paste into the Supabase SQL editor.
+      - name: Bundle migrations
+        run: npm run build
 
-      - name: Upload jar
+      - name: Upload schema
         uses: actions/upload-artifact@v4
         with:
-          name: georeminder-backend-jar
-          path: target/*.jar
+          name: georeminder-schema-sql
+          path: dist/schema.sql
           if-no-files-found: error
           retention-days: 14

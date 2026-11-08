@@ -5,7 +5,8 @@
   "type": "module",
   "description": "GeoReminder trip-sharing backend: Supabase (Postgres) migrations and tests. No server code.",
   "scripts": {
-    "test": "node --test \"tests/*.test.mjs\""
+    "test": "node --test \"tests/*.test.mjs\"",
+    "build": "node scripts/bundle-migrations.mjs"
   },
   "engines": {
     "node": ">=22"
