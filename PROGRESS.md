@@ -261,7 +261,24 @@ all point at 40712b6 (SP03-C06, fast-forward). Not run yet: the app on a phone o
 - The local `backup-before-ids` branch was deleted. It held first drafts of the SP01 commits
   from before the commit IDs; `adam` has their final form.
 
+## v0.3.1: manual test, app icon and versions (9 Nov 2026)
+
+- Manual test: Adam ran the v0.3.0 test cases (home tabs, trip and task forms, locked tasks,
+  suggested order, saving after the app is killed, rotation, light and dark theme) on the debug
+  build of 17ad339 on a Pixel 9 Pro XL emulator, and reported them passed. Not run yet: a real
+  phone.
+- App icon: Adam's logo (white "G" with a location pin on navy) is the launcher icon on Android
+  (adaptive, round-safe, themed) and iOS, and the app is named "GeoReminder" (app a71b1f6).
+  Verified on the emulator's app drawer; the iOS icons were not seen on a device.
+- Versions: `0.<sprint>.<fix>`. A finished sprint sets `0.<sprint>.0`, each later fix or small
+  change raises the last number; build number is `major*10000 + minor*100 + patch`. The app is
+  `0.3.1+301`. CD on `main` now releases `v<version>` with `docs/releases/v<version>.md` as the
+  text and stops if the version already exists (app cbe529e). The release step was run locally
+  up to the tag check; the publish itself runs only when Adam merges `review` into `main`.
+
 ## Next
+
+- Adam merges `review` into `main` in both repos; CD publishes app release v0.3.1.
 
 - Live run of `npm run verify-remote` against the real project (needs the project URL and anon
   key from Adam).
