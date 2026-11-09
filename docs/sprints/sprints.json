@@ -19,7 +19,8 @@
         { "id": "SP01-C03", "repo": "backend", "status": "done", "title": "Reject dependency cycles and early completions in share_trip", "tests": "Self, direct and indirect cycles, diamond accepted, early completion rejected, table privileges." },
         { "id": "SP01-C04", "repo": "backend", "status": "done", "title": "Add sprint plan and per-commit test registry", "tests": "Plan is valid; every done commit has tests tagged with its ID; SPRINTS.md matches the plan." },
         { "id": "SP01-C05", "repo": "backend", "status": "done", "title": "Add verify-remote script for a real Supabase project", "tests": "Offline unit tests of the script's checks; the live run needs Adam's project URL and anon key." },
-        { "id": "SP01-C06", "repo": "backend", "status": "done", "title": "Write the backend README", "tests": "README lists the commands that exist in package.json and contains no keys." }
+        { "id": "SP01-C06", "repo": "backend", "status": "done", "title": "Write the backend README", "tests": "README lists the commands that exist in package.json and contains no keys." },
+        { "id": "SP01-C07", "repo": "backend", "status": "done", "title": "Fast-forward test and review to the pushed sprint commit", "tests": "Fast-forward when test has nothing new; otherwise a reproducible merge named after the latest sprint commit; conflicts listed." }
       ]
     },
     {

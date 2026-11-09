@@ -1,7 +1,10 @@
 name: Pipeline
 
 # A push to a personal branch (adam / mohammad / hammam) runs:
-#   1. merge     merge the push into test. Conflict -> run fails and lists the files.
+#   1. merge     bring the push onto test: a fast-forward when test has nothing new (test
+#                and review then show the pushed commit, e.g. "SP01-C07 ..."), otherwise a
+#                merge commit named after the push's latest commit. Conflict -> run fails
+#                and lists the files. See .github/actions/merge-into/merge.mjs.
 #   2. ci        check + build (ci.yml) on that merged code. Failure -> run fails.
 #   3. promote   push the merge to test and move review to the same commit.
 # Nothing is pushed to test unless steps 1 and 2 passed, so test and review only
@@ -112,7 +115,7 @@ jobs:
           {
             echo "## Promoted"
             echo
-            echo "\`${GITHUB_REF_NAME}\` is merged into **test** and **review** at \`${BUILT_SHA:0:7}\`."
+            echo "\`${GITHUB_REF_NAME}\` is on **test** and **review** at \`${BUILT_SHA:0:7}\` ($(git log -1 --format=%s HEAD))."
             echo
             echo "The bundled schema.sql is in this run's artifacts."
             echo "If it passes the manual checklist, Adam merges review into main."

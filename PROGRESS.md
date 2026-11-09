@@ -163,6 +163,31 @@ on supabase.com on 8 Nov 2026; the README says to check the pricing page. The
 dashboard menu names (Authentication > Sign In / Providers, Rate Limits, Project Settings > API
 Keys) may have moved.
 
+CI on GitHub: verified at SP01-C06 (9 Nov 2026). The Pipeline run on `adam` passed all four
+jobs with 86 tests, and `test` and `review` moved to the merge `4e7daa6`.
+
+### B4. Pipeline fast-forwards to the sprint commit (SP01-C07, 9 Nov 2026)
+
+Adam's request: after a successful run, `test` and `review` should show the sprint commit, not
+"Merge adam into test". The merge step always made a `--no-ff` merge commit. It is now
+`.github/actions/merge-into/merge.mjs` (Node, no dependency; the runner's Node runs it):
+
+- `test` is an ancestor of the push: fast-forward, so `test` and `review` are the pushed commit.
+- the branches diverged (someone else's push landed first): a merge commit whose subject is the
+  push's latest non-merge commit (`SP01-C07 ...`) and whose body is "Merge adam into test".
+  Author and dates stay pinned, so the merge, check, build and promote jobs get the same SHA.
+- conflicts: the same file list, step summary and annotations as before.
+
+`adam` was fast-forwarded to `origin/test` first (`git merge --ff-only`, no new commit), so this
+commit sits on top of `test` and its own pipeline run should fast-forward.
+
+Verified by running: `npm test` (93 tests, all passing; 7 are SP01-C07), with `tests/merge-into.test.mjs` against throwaway
+git repos (7 tests). Turning off the fast-forward failed 2 of them; going back to the old merge
+name failed 2 others.
+
+Not verified: the pipeline on GitHub with this change (not pushed yet). Expected result: `test`
+and `review` at the SP01-C07 commit itself.
+
 SP01 is marked done: every commit in it is done. The live verify-remote run is still open (below).
 
 ## In progress

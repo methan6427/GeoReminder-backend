@@ -153,10 +153,21 @@ relying on them.
 adam | mohammad | hammam  --auto-->  test  --auto-->  review  --PR (Adam)-->  main
 ```
 
-Push to your personal branch. The **Pipeline** workflow merges the push into `test`, runs
-`check` (`npm test`) and `build` (`dist/schema.sql`) on the merged code, and only if both pass
-moves `test` and `review` to that merge. A conflict or a failure changes nothing and GitHub emails
-you. Adam merges `review` into `main` by hand. That merge releases a sprint's version.
+Push to your personal branch. The **Pipeline** workflow brings the push onto `test`, runs
+`check` (`npm test`) and `build` (`dist/schema.sql`) on the result, and only if both pass moves
+`test` and `review` to it. A conflict or a failure changes nothing and GitHub emails you. Adam
+merges `review` into `main` by hand. That merge releases a sprint's version.
+
+When `test` has nothing your branch lacks, `test` and `review` fast-forward to your commit, so
+they show it (`SP01-C07 ...`) with no merge commit. When someone else's work landed first, the
+pipeline makes a merge commit named after your latest commit, with "Merge adam into test" in its
+body. To keep fast-forwards, start each piece of work from the latest `test`:
+
+```
+git fetch origin && git merge --ff-only origin/test
+```
+
+(The logic is in `.github/actions/merge-into/merge.mjs`, tested by `tests/merge-into.test.mjs`.)
 
 ## Rules
 

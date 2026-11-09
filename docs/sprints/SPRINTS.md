@@ -13,7 +13,7 @@ screens in the project portal.
 
 | Sprint | Version | Title | Status | Commits |
 | --- | --- | --- | --- | --- |
-| SP01 | v0.1.0 | Backend foundation | done | 6/6 |
+| SP01 | v0.1.0 | Backend foundation | done | 7/7 |
 | SP02 | v0.2.0 | App domain and local storage | planned | 0/6 |
 | SP03 | v0.3.0 | App shell, trips and suggested order | planned | 0/6 |
 | SP04 | v0.4.0 | Map and places | planned | 0/5 |
@@ -42,6 +42,7 @@ Status: done.
 | SP01-C04 | backend | done | Add sprint plan and per-commit test registry | Plan is valid; every done commit has tests tagged with its ID; SPRINTS.md matches the plan. |
 | SP01-C05 | backend | done | Add verify-remote script for a real Supabase project | Offline unit tests of the script's checks; the live run needs Adam's project URL and anon key. |
 | SP01-C06 | backend | done | Write the backend README | README lists the commands that exist in package.json and contains no keys. |
+| SP01-C07 | backend | done | Fast-forward test and review to the pushed sprint commit | Fast-forward when test has nothing new; otherwise a reproducible merge named after the latest sprint commit; conflicts listed. |
 
 ## SP02 v0.2.0: App domain and local storage
 
