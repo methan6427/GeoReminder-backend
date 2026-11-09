@@ -276,9 +276,24 @@ all point at 40712b6 (SP03-C06, fast-forward). Not run yet: the app on a phone o
   text and stops if the version already exists (app cbe529e). The release step was run locally
   up to the tag check; the publish itself runs only when Adam merges `review` into `main`.
 
+- Release: Adam created `main` in both repos at `review` (app cbe529e, backend b71e9b8). App
+  CD run 42619742977 passed check, build and release and published GitHub release v0.3.1 with
+  `georeminder-v0.3.1.apk`; tag v0.3.1 points at cbe529e. Not run yet: the release APK on a
+  phone.
+
+## Live Supabase project (9 Nov 2026)
+
+Adam created the project `georeminder` (free plan, Data API on, new tables exposed, automatic
+RLS on), ran `dist/schema.sql` (both migrations) in the SQL editor and turned on anonymous
+sign-ins. The project URL and publishable key are in the backend's ignored `.env`, never in git.
+
+Verified by running `node --env-file=.env scripts/verify-remote.mjs` against it: all 24 checks
+passed (sign-in, share and join, NOT_ALLOWED for a stranger, RLS on all three tables, refused
+direct writes, BLOCKED, Realtime to the participant and not the stranger, cleanup). It left three
+anonymous users in Authentication > Users. Supabase now issues publishable keys
+(`sb_publishable_...`) instead of the legacy anon key; the script already sends the key only in
+the `apikey` header, so it works unchanged, and the README now says publishable key.
+
 ## Next
 
-- Adam merges `review` into `main` in both repos; CD publishes app release v0.3.1.
-
-- Live run of `npm run verify-remote` against the real project (needs the project URL and anon
-  key from Adam).
+- SP04 (map and places).

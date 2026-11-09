@@ -64,22 +64,40 @@ Done once, by hand, in the Supabase dashboard (free plan). Only the project owne
 4. **Authentication > Rate Limits**: raise the limit for anonymous sign-ins. The default is low
    (30 per hour per IP address when this was written), and a class demo where everyone joins from
    the same Wi-Fi shares one IP address.
-5. **Project Settings > API Keys**: copy the project URL and the `anon` public key. The app and
-   verify-remote need both. Never use the `service_role` (secret) key in the app, a script in
-   this repo or a commit.
+5. **Project Settings > API Keys**: copy the **publishable** key (`sb_publishable_...`, it
+   replaced the legacy `anon` key; a legacy `anon` key also works). The project URL is
+   `https://<project-id>.supabase.co`, with the project ID from **Settings > General**. The app
+   and verify-remote need both. Never use a secret key (`sb_secret_...`, or the legacy
+   `service_role` key) in the app, a script in this repo or a commit.
 
 Realtime needs no dashboard step: the first migration adds `tasks` to the `supabase_realtime`
 publication.
 
 ## Checking a real project
 
+Put both values in `.env` (ignored by git) and run the script with Node's `--env-file`:
+
+```
+# .env
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_ANON_KEY=<publishable key>
+
+# bash or PowerShell
+node --env-file=.env scripts/verify-remote.mjs
+```
+
+Or set them in the shell for one run:
+
 ```
 # bash
-SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<anon key> npm run verify-remote
+SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<publishable key> npm run verify-remote
 
 # PowerShell
-$env:SUPABASE_URL = "https://<project-ref>.supabase.co"; $env:SUPABASE_ANON_KEY = "<anon key>"; npm run verify-remote
+$env:SUPABASE_URL = "https://<project-ref>.supabase.co"; $env:SUPABASE_ANON_KEY = "<publishable key>"; npm run verify-remote
 ```
+
+The variable keeps its old name, `SUPABASE_ANON_KEY`; it takes the publishable key. The key is
+sent only in the `apikey` header, so the new non-JWT keys work.
 
 It signs in three anonymous users (owner, joiner, stranger), shares a two-task trip and prints
 PASS or FAIL for each check:
@@ -98,7 +116,7 @@ Exit code 0 means every check passed, 1 means at least one failed, and 2 means a
 missing. The key and the users' tokens are never printed. Each run leaves three anonymous users
 in **Authentication > Users**. Their ids are printed so you can delete them.
 
-The anon key is meant to be public (it ships inside the app), but keep it out of the repo anyway:
+The publishable key is meant to be public (it ships inside the app), but keep it out of the repo anyway:
 set it in the shell, or in a `.env` file, which `.gitignore` already excludes.
 
 ## The API the app calls

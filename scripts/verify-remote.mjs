@@ -2,7 +2,7 @@
 // tests cannot see because they run as a Postgres superuser without Supabase around them
 // (row-level security as seen by real users, table privileges through the REST API, Realtime).
 //
-//   SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<anon key> npm run verify-remote
+//   SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<publishable key> npm run verify-remote
 //
 // It signs in three anonymous users (owner, joiner, stranger), shares a small trip, runs the
 // checks, prints PASS or FAIL for each, and always stops sharing the trip at the end.
@@ -284,7 +284,7 @@ export async function main({ env = process.env, log = console.log, fetch = globa
   const cfg = readConfig(env);
   if (cfg.errors.length) {
     for (const e of cfg.errors) log(`verify-remote: ${e}`);
-    log('usage: SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<anon key> npm run verify-remote');
+    log('usage: SUPABASE_URL=https://<project-ref>.supabase.co SUPABASE_ANON_KEY=<publishable key> npm run verify-remote');
     return EXIT.CONFIG;
   }
   const safeLog = (s) => log(String(s).replaceAll(cfg.key, '<redacted>'));
