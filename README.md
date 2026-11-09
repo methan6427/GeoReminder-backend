@@ -67,8 +67,9 @@ Done once, by hand, in the Supabase dashboard (free plan). Only the project owne
 5. **Project Settings > API Keys**: copy the **publishable** key (`sb_publishable_...`, it
    replaced the legacy `anon` key; a legacy `anon` key also works). The project URL is
    `https://<project-ref>.supabase.co`, with the project ref (Project ID) from
-   **Settings > General**. The app and verify-remote need both. Never use a secret key (`sb_secret_...`, or the legacy
-   `service_role` key) in the app, a script in this repo or a commit.
+   **Settings > General**. The app and verify-remote need both. Never use a secret key
+   (`sb_secret_...`, or the legacy `service_role` key) in the app, a script in this repo or a
+   commit.
 
 Realtime needs no dashboard step: the first migration adds `tasks` to the `supabase_realtime`
 publication.
