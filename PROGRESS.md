@@ -222,12 +222,16 @@ SP03 (0.3.0) app shell, trips and suggested order. Screens S05, S05s, S06, S07, 
 - SP03-C02 home trip list: Active / Upcoming / History, trip cards with progress, History
   cards, and the loading, empty and error states. Trips get an optional `finishedAt`
   (History). New app dependency: path_provider, for the app's private documents folder.
+- SP03-C03 trip form (New trip / Edit trip): title required and up to 40 characters, date from
+  the Material date picker (new trips start on today), optional notes. Close leaves without
+  saving; editing keeps the tasks and unknown fields; a failed save keeps the form open. Home
+  gets the New trip button. The repeat part of "Date and repeat" waits for S13 (SP09).
 
 Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
-(147 tests), and injected defects per commit that each failed the tests. Not run yet: the app
+(162 tests), and injected defects per commit that each failed the tests. Not run yet: the app
 on a phone or emulator.
 
-Still to do in SP03: C03 trip form, C04 trip details with locked tasks, C05 task form with the
+Still to do in SP03: C04 trip details with locked tasks, C05 task form with the
 prerequisite picker, C06 straight-line suggested order.
 
 ## Next
