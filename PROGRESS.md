@@ -214,8 +214,8 @@ made-up older versions.
 
 ## SP03 (0.3.0 app shell, trips and suggested order, Flutter repo)
 
-Screens S05, S05s, S06, S07, S07s, S08, S11. All six commits are done in the app repo, locally
-(not pushed yet):
+Screens S05, S05s, S06, S07, S07s, S08, S11. All six commits are done and pushed in the app
+repo:
 
 - SP03-C01 app shell: light and dark Material 3 themes made from the design tokens (a test
   checks every token against the design sheet), app state on ChangeNotifier with no package,
@@ -244,8 +244,22 @@ Screens S05, S05s, S06, S07, S07s, S08, S11. All six commits are done in the app
   strip above the list comes with the map (SP04).
 
 Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
-(221 tests), and injected defects per commit that each failed the tests. Not run yet: the app
-on a phone or emulator, and the pipelines on GitHub for these commits.
+(221 tests), and injected defects per commit that each failed the tests. Verified on GitHub:
+app pipeline run 42553384397 ran merge, check, build and promote; `adam`, `test` and `review`
+all point at 40712b6 (SP03-C06, fast-forward). Not run yet: the app on a phone or emulator.
+
+## Decisions after SP03 (9 Nov 2026)
+
+- S30 stays in SP12. The design shows it as a notice reached from Settings ("sign-in comes
+  later, not in the first release"), not as a working sign-in, so SP12-C02 now says so.
+- SP01 stays done. All its commits are done; the live verify-remote run is a manual step that
+  needs the project URL and anon key, and stays listed under Next.
+- The app keeps its own import message for files from a newer app version ("Update the app and
+  try again"), since the generic message would not tell the user what to do.
+- The app's README and AGENTS.md now describe what the app does and that the backend is
+  Supabase. The routing engine is still open (SP11).
+- The local `backup-before-ids` branch was deleted. It held first drafts of the SP01 commits
+  from before the commit IDs; `adam` has their final form.
 
 ## Next
 

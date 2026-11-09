@@ -190,7 +190,7 @@ Status: planned. Screens: S25, S26, S27, S28, S29, S30.
 | Commit | Repo | Status | Change | Unit tests |
 | --- | --- | --- | --- | --- |
 | SP12-C01 | flutter | planned | Add settings screen | Each setting saved and applied. |
-| SP12-C02 | flutter | planned | Add terms, privacy and accounts-later screens | Screens open from settings and first run. |
+| SP12-C02 | flutter | planned | Add terms, privacy and sign-in-later screens | Screens open from settings and first run; the account screen (S30) only says sign-in comes after the first release and signs nobody in. |
 | SP12-C03 | backend | planned | Add delete_my_data function | Owner trips removed, participation removed, other users' data untouched. |
 | SP12-C04 | flutter | planned | Add delete all data | Local files, geofences, notifications and the cloud record are removed. |
 | SP12-C05 | flutter | planned | Add about screen with licences and map attribution | Version shown; OpenStreetMap attribution present. |

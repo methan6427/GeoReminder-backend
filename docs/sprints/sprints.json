@@ -179,7 +179,7 @@
       "screens": ["S25", "S26", "S27", "S28", "S29", "S30"],
       "commits": [
         { "id": "SP12-C01", "repo": "flutter", "status": "planned", "title": "Add settings screen", "tests": "Each setting saved and applied." },
-        { "id": "SP12-C02", "repo": "flutter", "status": "planned", "title": "Add terms, privacy and accounts-later screens", "tests": "Screens open from settings and first run." },
+        { "id": "SP12-C02", "repo": "flutter", "status": "planned", "title": "Add terms, privacy and sign-in-later screens", "tests": "Screens open from settings and first run; the account screen (S30) only says sign-in comes after the first release and signs nobody in." },
         { "id": "SP12-C03", "repo": "backend", "status": "planned", "title": "Add delete_my_data function", "tests": "Owner trips removed, participation removed, other users' data untouched." },
         { "id": "SP12-C04", "repo": "flutter", "status": "planned", "title": "Add delete all data", "tests": "Local files, geofences, notifications and the cloud record are removed." },
         { "id": "SP12-C05", "repo": "flutter", "status": "planned", "title": "Add about screen with licences and map attribution", "tests": "Version shown; OpenStreetMap attribution present." }
