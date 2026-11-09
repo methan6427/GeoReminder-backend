@@ -190,14 +190,30 @@ all point at 40b865f, the SP01-C07 commit itself (fast-forward, no merge commit)
 
 SP01 is marked done: every commit in it is done. The live verify-remote run is still open (below).
 
+## SP02 (app domain and local storage, Flutter repo)
+
+This repo only holds the plan for it. The app's registry test reads `docs/sprints/sprints.json`
+from `review` here, so push this repo before pushing the app.
+
+All seven commits are done in the app repo, locally (not pushed yet):
+
+- SP02-C01 registry: the app checks its tagged tests and commit subjects against this plan.
+- SP02-C02 Trip, Task and Place models; JSON keys match what share_trip and get_trip use.
+- SP02-C03 DependencyGraph: ready/blocked, next up, loop check for the picker, and the same
+  consistency rules as share_trip.
+- SP02-C04 TripRepository: one trips.json, temp file plus backup, recovery from the backup.
+- SP02-C05 completion of solo tasks: blocked tasks refused, one-way, repeat is a no-op.
+- SP02-C06 trip export/import file, versioned, with an upgrade chain.
+- SP02-C07 the app pipeline uses the same merge script as this repo.
+
+Verified by running in the app repo: `dart format`, `flutter analyze` and `flutter test`
+(109 tests), and two injected defects per commit that each failed the tests. Not verified: the
+app's CI and pipeline on GitHub (not pushed). No older trip file version exists yet, so the
+upgrade chain is tested with made-up older versions.
+
 ## In progress
 
-SP02 (app domain and local storage) in the Flutter repo. This repo only holds its plan: each
-SP02 commit is marked done in `docs/sprints/sprints.json` when it is committed there. The app's
-registry test reads this file from `review`, so push the plan here before pushing the app.
-
-- SP02-C07 done: the app pipeline uses the same merge script as this repo.
-- SP02-C01 done: the app repo checks its tests and commit subjects against this plan.
+Nothing. Waiting for "next" (SP03, the first screens).
 
 ## Next
 
