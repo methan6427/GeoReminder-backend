@@ -185,14 +185,19 @@ Verified by running: `npm test` (93 tests, all passing; 7 are SP01-C07), with `t
 git repos (7 tests). Turning off the fast-forward failed 2 of them; going back to the old merge
 name failed 2 others.
 
-Not verified: the pipeline on GitHub with this change (not pushed yet). Expected result: `test`
-and `review` at the SP01-C07 commit itself.
+Verified on GitHub afterwards: pipeline run 42541702869 passed and `adam`, `test` and `review`
+all point at 40b865f, the SP01-C07 commit itself (fast-forward, no merge commit).
 
 SP01 is marked done: every commit in it is done. The live verify-remote run is still open (below).
 
 ## In progress
 
-Nothing. Waiting for "next".
+SP02 (app domain and local storage) in the Flutter repo. This repo only holds its plan: each
+SP02 commit is marked done in `docs/sprints/sprints.json` when it is committed there. The app's
+registry test reads this file from `review`, so push the plan here before pushing the app.
+
+- SP02-C07 done: the app pipeline uses the same merge script as this repo.
+- SP02-C01 done: the app repo checks its tests and commit subjects against this plan.
 
 ## Next
 

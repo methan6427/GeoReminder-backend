@@ -28,15 +28,16 @@
       "version": "0.2.0",
       "title": "App domain and local storage",
       "goal": "Trips and tasks with prerequisites, saved on the phone, no UI yet.",
-      "status": "planned",
+      "status": "in-progress",
       "screens": [],
       "commits": [
-        { "id": "SP02-C01", "repo": "flutter", "status": "planned", "title": "Add commit-ID test registry to the app repo", "tests": "Every done app commit in the plan has a test whose name starts with its ID." },
+        { "id": "SP02-C01", "repo": "flutter", "status": "done", "title": "Add commit-ID test registry to the app repo", "tests": "Every done app commit in the plan has a test whose name starts with its ID." },
         { "id": "SP02-C02", "repo": "flutter", "status": "planned", "title": "Add Trip, Task and Place models with JSON round-trip", "tests": "Round-trip, unknown fields kept, bad input rejected." },
         { "id": "SP02-C03", "repo": "flutter", "status": "planned", "title": "Add DependencyGraph with cycle detection", "tests": "Ready and blocked tasks, self, direct and indirect cycles, diamond." },
         { "id": "SP02-C04", "repo": "flutter", "status": "planned", "title": "Add TripRepository with atomic writes and corrupt-file recovery", "tests": "Save and load, interrupted write keeps the old file, corrupt file recovered from backup." },
         { "id": "SP02-C05", "repo": "flutter", "status": "planned", "title": "Add TaskCompletionService for solo trips", "tests": "Blocked task cannot be completed; completion is one-way and idempotent." },
-        { "id": "SP02-C06", "repo": "flutter", "status": "planned", "title": "Add versioned trip export and import format", "tests": "Export then import gives the same trips; older format versions upgrade; bad files rejected." }
+        { "id": "SP02-C06", "repo": "flutter", "status": "planned", "title": "Add versioned trip export and import format", "tests": "Export then import gives the same trips; older format versions upgrade; bad files rejected." },
+        { "id": "SP02-C07", "repo": "flutter", "status": "done", "title": "Fast-forward test and review to the pushed sprint commit", "tests": "The pipeline's merge script, run with Node on throwaway repos: fast-forward, named merge, conflict." }
       ]
     },
     {

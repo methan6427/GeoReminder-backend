@@ -14,7 +14,7 @@ screens in the project portal.
 | Sprint | Version | Title | Status | Commits |
 | --- | --- | --- | --- | --- |
 | SP01 | v0.1.0 | Backend foundation | done | 7/7 |
-| SP02 | v0.2.0 | App domain and local storage | planned | 0/6 |
+| SP02 | v0.2.0 | App domain and local storage | in-progress | 2/7 |
 | SP03 | v0.3.0 | App shell, trips and suggested order | planned | 0/6 |
 | SP04 | v0.4.0 | Map and places | planned | 0/5 |
 | SP05 | v0.5.0 | Geofencing and reminders | planned | 0/5 |
@@ -48,16 +48,17 @@ Status: done.
 
 Trips and tasks with prerequisites, saved on the phone, no UI yet.
 
-Status: planned.
+Status: in-progress.
 
 | Commit | Repo | Status | Change | Unit tests |
 | --- | --- | --- | --- | --- |
-| SP02-C01 | flutter | planned | Add commit-ID test registry to the app repo | Every done app commit in the plan has a test whose name starts with its ID. |
+| SP02-C01 | flutter | done | Add commit-ID test registry to the app repo | Every done app commit in the plan has a test whose name starts with its ID. |
 | SP02-C02 | flutter | planned | Add Trip, Task and Place models with JSON round-trip | Round-trip, unknown fields kept, bad input rejected. |
 | SP02-C03 | flutter | planned | Add DependencyGraph with cycle detection | Ready and blocked tasks, self, direct and indirect cycles, diamond. |
 | SP02-C04 | flutter | planned | Add TripRepository with atomic writes and corrupt-file recovery | Save and load, interrupted write keeps the old file, corrupt file recovered from backup. |
 | SP02-C05 | flutter | planned | Add TaskCompletionService for solo trips | Blocked task cannot be completed; completion is one-way and idempotent. |
 | SP02-C06 | flutter | planned | Add versioned trip export and import format | Export then import gives the same trips; older format versions upgrade; bad files rejected. |
+| SP02-C07 | flutter | done | Fast-forward test and review to the pushed sprint commit | The pipeline's merge script, run with Node on throwaway repos: fast-forward, named merge, conflict. |
 
 ## SP03 v0.3.0: App shell, trips and suggested order
 
