@@ -15,7 +15,7 @@ screens in the project portal.
 | --- | --- | --- | --- | --- |
 | SP01 | v0.1.0 | Backend foundation | done | 7/7 |
 | SP02 | v0.2.0 | App domain and local storage | done | 7/7 |
-| SP03 | v0.3.0 | App shell, trips and suggested order | planned | 0/6 |
+| SP03 | v0.3.0 | App shell, trips and suggested order | in-progress | 2/6 |
 | SP04 | v0.4.0 | Map and places | planned | 0/5 |
 | SP05 | v0.5.0 | Geofencing and reminders | planned | 0/5 |
 | SP06 | v0.6.0 | Trip Mode | planned | 0/4 |
@@ -64,12 +64,12 @@ Status: done.
 
 Create trips and tasks in the app and see a suggested visiting order.
 
-Status: planned. Screens: S05, S05s, S06, S07, S07s, S08, S11.
+Status: in-progress. Screens: S05, S05s, S06, S07, S07s, S08, S11.
 
 | Commit | Repo | Status | Change | Unit tests |
 | --- | --- | --- | --- | --- |
-| SP03-C01 | flutter | planned | Add app shell: state management, theme and bottom navigation | Widget test of navigation between tabs; theme tokens match the design system. |
-| SP03-C02 | flutter | planned | Add home trip list with empty, loading and error states | Widget tests for each state. |
+| SP03-C01 | flutter | done | Add app shell: state management, theme and bottom navigation | Widget test of navigation between tabs; theme tokens match the design system. |
+| SP03-C02 | flutter | done | Add home trip list with empty, loading and error states | Widget tests for each state. |
 | SP03-C03 | flutter | planned | Add create and edit trip form | Validation, save, cancel. |
 | SP03-C04 | flutter | planned | Add trip details with locked-task state | A locked task shows 'Complete <name> first' and cannot be ticked. |
 | SP03-C05 | flutter | planned | Add task form with a prerequisite picker that rejects cycles | Picker hides choices that would make a cycle. |

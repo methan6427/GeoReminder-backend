@@ -207,13 +207,28 @@ All seven commits are done in the app repo, locally (not pushed yet):
 - SP02-C07 the app pipeline uses the same merge script as this repo.
 
 Verified by running in the app repo: `dart format`, `flutter analyze` and `flutter test`
-(109 tests), and two injected defects per commit that each failed the tests. Not verified: the
-app's CI and pipeline on GitHub (not pushed). No older trip file version exists yet, so the
-upgrade chain is tested with made-up older versions.
+(109 tests), and two injected defects per commit that each failed the tests. Verified on
+GitHub: both pipelines ran merge, check, build and promote to review (this repo at 9180f8d, the
+app at 7e600dd). No older trip file version exists yet, so the upgrade chain is tested with
+made-up older versions.
 
 ## In progress
 
-Nothing. Waiting for "next" (SP03, the first screens).
+SP03 (0.3.0) app shell, trips and suggested order. Screens S05, S05s, S06, S07, S07s, S08, S11.
+
+- SP03-C01 app shell: light and dark Material 3 themes made from the design tokens (a test
+  checks every token against the design sheet), app state on ChangeNotifier with no package,
+  bottom navigation Trips / Map / Calendar / Settings; back on another tab returns to Trips.
+- SP03-C02 home trip list: Active / Upcoming / History, trip cards with progress, History
+  cards, and the loading, empty and error states. Trips get an optional `finishedAt`
+  (History). New app dependency: path_provider, for the app's private documents folder.
+
+Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
+(147 tests), and injected defects per commit that each failed the tests. Not run yet: the app
+on a phone or emulator.
+
+Still to do in SP03: C03 trip form, C04 trip details with locked tasks, C05 task form with the
+prerequisite picker, C06 straight-line suggested order.
 
 ## Next
 
