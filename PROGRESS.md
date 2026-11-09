@@ -226,12 +226,16 @@ SP03 (0.3.0) app shell, trips and suggested order. Screens S05, S05s, S06, S07, 
   the Material date picker (new trips start on today), optional notes. Close leaves without
   saving; editing keeps the tasks and unknown fields; a failed save keeps the form open. Home
   gets the New trip button. The repeat part of "Date and repeat" waits for S13 (SP09).
+- SP03-C04 trip details: progress, task cards (done, Next up, locked, open) and a task sheet
+  with Complete. A locked task shows "Complete <name> first", cannot be completed (screen and
+  controller both refuse, nothing is saved) and offers Go to. Finish trip when all tasks are
+  done moves the trip to History, which is read-only. Menu: Edit and Delete (asks first).
 
 Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
-(162 tests), and injected defects per commit that each failed the tests. Not run yet: the app
+(179 tests), and injected defects per commit that each failed the tests. Not run yet: the app
 on a phone or emulator.
 
-Still to do in SP03: C04 trip details with locked tasks, C05 task form with the
+Still to do in SP03: C05 task form with the
 prerequisite picker, C06 straight-line suggested order.
 
 ## Next
