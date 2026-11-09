@@ -52,7 +52,7 @@
         { "id": "SP03-C02", "repo": "flutter", "status": "done", "title": "Add home trip list with empty, loading and error states", "tests": "Widget tests for each state." },
         { "id": "SP03-C03", "repo": "flutter", "status": "done", "title": "Add create and edit trip form", "tests": "Validation, save, cancel." },
         { "id": "SP03-C04", "repo": "flutter", "status": "done", "title": "Add trip details with locked-task state", "tests": "A locked task shows 'Complete <name> first' and cannot be ticked." },
-        { "id": "SP03-C05", "repo": "flutter", "status": "planned", "title": "Add task form with a prerequisite picker that rejects cycles", "tests": "Picker hides choices that would make a cycle." },
+        { "id": "SP03-C05", "repo": "flutter", "status": "done", "title": "Add task form with a prerequisite picker that rejects cycles", "tests": "Picker hides choices that would make a cycle." },
         { "id": "SP03-C06", "repo": "flutter", "status": "planned", "title": "Add straight-line route provider and suggested order", "tests": "Haversine distances, order respects prerequisites, distance only." }
       ]
     },

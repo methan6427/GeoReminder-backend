@@ -230,13 +230,17 @@ SP03 (0.3.0) app shell, trips and suggested order. Screens S05, S05s, S06, S07, 
   with Complete. A locked task shows "Complete <name> first", cannot be completed (screen and
   controller both refuse, nothing is saved) and offers Go to. Finish trip when all tasks are
   done moves the trip to History, which is read-only. Menu: Edit and Delete (asks first).
+- SP03-C05 task form (Add task / Edit task): title, place, radius 50 to 500 m, Arrive / Leave /
+  Both, Depends on, notes. The Depends on chips hide every task that already waits for this
+  one, and the controller refuses to save a loop. The task sheet gets Edit task and Delete
+  task; deleting a task frees the tasks that waited for it. Until the map picker (SP04-C02)
+  the place is typed in as a name, latitude and longitude.
 
 Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
-(179 tests), and injected defects per commit that each failed the tests. Not run yet: the app
+(197 tests), and injected defects per commit that each failed the tests. Not run yet: the app
 on a phone or emulator.
 
-Still to do in SP03: C05 task form with the
-prerequisite picker, C06 straight-line suggested order.
+Still to do in SP03: C06 straight-line suggested order.
 
 ## Next
 
