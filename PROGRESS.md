@@ -212,9 +212,10 @@ GitHub: both pipelines ran merge, check, build and promote to review (this repo 
 app at 7e600dd). No older trip file version exists yet, so the upgrade chain is tested with
 made-up older versions.
 
-## In progress
+## SP03 (0.3.0 app shell, trips and suggested order, Flutter repo)
 
-SP03 (0.3.0) app shell, trips and suggested order. Screens S05, S05s, S06, S07, S07s, S08, S11.
+Screens S05, S05s, S06, S07, S07s, S08, S11. All six commits are done in the app repo, locally
+(not pushed yet):
 
 - SP03-C01 app shell: light and dark Material 3 themes made from the design tokens (a test
   checks every token against the design sheet), app state on ChangeNotifier with no package,
@@ -235,12 +236,16 @@ SP03 (0.3.0) app shell, trips and suggested order. Screens S05, S05s, S06, S07, 
   one, and the controller refuses to save a loop. The task sheet gets Edit task and Delete
   task; deleting a task frees the tasks that waited for it. Until the map picker (SP04-C02)
   the place is typed in as a name, latitude and longitude.
+- SP03-C06 suggested order (S11): a distance-only route provider (straight-line haversine
+  distance; nothing estimates time). The order walks to the nearest task that can be done
+  next, tries each possible first stop and keeps the shortest walk, so a task never comes
+  before a task it waits for. Use this order saves it with the done tasks first; Keep my
+  order changes nothing. Offered from trip details when two or more tasks are left. The map
+  strip above the list comes with the map (SP04).
 
 Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
-(197 tests), and injected defects per commit that each failed the tests. Not run yet: the app
-on a phone or emulator.
-
-Still to do in SP03: C06 straight-line suggested order.
+(221 tests), and injected defects per commit that each failed the tests. Not run yet: the app
+on a phone or emulator, and the pipelines on GitHub for these commits.
 
 ## Next
 
