@@ -294,6 +294,18 @@ anonymous users in Authentication > Users. Supabase now issues publishable keys
 (`sb_publishable_...`) instead of the legacy anon key; the script already sends the key only in
 the `apikey` header, so it works unchanged, and the README now says publishable key.
 
+## SP04 (0.4.0 map and places, Flutter repo, in progress)
+
+Screens S09, S10, S15, S15s.
+
+- SP04-C01 map widget: OpenStreetMap tiles through flutter_map, with "© OpenStreetMap
+  contributors" always shown in the corner (it stays above any layer a screen adds) and
+  linking to openstreetmap.org/copyright. Tile requests send the User-Agent
+  `flutter_map (edu.birzeit.georeminder)`; dark mode recolours the tiles. Tests use blank
+  tiles and never touch the network. New app dependencies: flutter_map 8.3.2 (map),
+  latlong2 0.10.1 (its coordinate type) and url_launcher 6.3.3 (opening the copyright page).
+  The Android app now asks for the INTERNET permission, which release builds did not have.
+
 ## Next
 
-- SP04 (map and places).
+- SP04-C02 to SP04-C05.

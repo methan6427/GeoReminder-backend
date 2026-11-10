@@ -61,10 +61,10 @@
       "version": "0.4.0",
       "title": "Map and places",
       "goal": "Pick places on a free map and search addresses.",
-      "status": "planned",
+      "status": "in-progress",
       "screens": ["S09", "S10", "S15", "S15s"],
       "commits": [
-        { "id": "SP04-C01", "repo": "flutter", "status": "planned", "title": "Add OpenStreetMap map widget with attribution", "tests": "Widget test that attribution is always shown." },
+        { "id": "SP04-C01", "repo": "flutter", "status": "done", "title": "Add OpenStreetMap map widget with attribution", "tests": "Widget test that attribution is always shown." },
         { "id": "SP04-C02", "repo": "flutter", "status": "planned", "title": "Add place picker", "tests": "Tap and drag set the place; radius is clamped." },
         { "id": "SP04-C03", "repo": "flutter", "status": "planned", "title": "Add address search within the Nominatim usage policy", "tests": "At most one request per second, identifying User-Agent, results cached (fake HTTP client)." },
         { "id": "SP04-C04", "repo": "flutter", "status": "planned", "title": "Add frequent places", "tests": "Save, rename, delete, reuse in a task." },
