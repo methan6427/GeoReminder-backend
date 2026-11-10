@@ -323,6 +323,14 @@ Screens S09, S10, S15, S15s.
   HTTP client and a fake clock. New app dependency: http 1.6.0 (Dart team package, already
   in the app through flutter_map; now listed directly because the app calls it).
 
+- SP04-C04 frequent places (S10): places saved for reuse, in their own file next to the
+  trips (`places.json`, saved the same safe way with a backup). Settings now opens Frequent
+  places, which lists them with Rename, Delete (asks first) and Add place (the map picker,
+  without a radius). The task place picker shows them as chips under the search field and can
+  save the current place with "Save as frequent place". A task copies the place, so renaming
+  or deleting a frequent place later leaves existing tasks alone. Nothing changes until the
+  places have loaded, so a file that cannot be read is never saved over.
+
 ## Next
 
-- SP04-C04 and SP04-C05.
+- SP04-C05.
