@@ -350,4 +350,6 @@ Nominatim searches (tests use fakes), and the pipelines on GitHub for C05.
 
 ## Next
 
-- Release 0.4.0 in the app repo (version, release notes, manual checklist), then SP05.
+- App 0.4.0 is set (app commit 4e0eba0, notes in docs/releases/v0.4.0.md). Adam runs the
+  manual checklist, now with a map section, on a phone before merging to main.
+- Then SP05-C01.
