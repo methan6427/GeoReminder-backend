@@ -313,6 +313,16 @@ Screens S09, S10, S15, S15s.
   coordinates dialog from SP03-C05; those SP03-C05 tests now drive the map picker instead.
   A new place starts at the trip's first task, or at Birzeit University.
 
+- SP04-C03 address search: the picker's search field asks OpenStreetMap's Nominatim, only
+  when the user submits (no search while typing). One shared search for the whole app keeps
+  to the usage policy: at most one request per second (later requests wait their turn), the
+  User-Agent `GeoReminder (edu.birzeit.georeminder)`, and results cached (the last 100
+  searches; the same search with other case or spacing is not sent again; failures are not
+  cached). Results near the pin rank higher. Choosing one moves the pin there, fills the
+  address and, if empty, the name. No results and failures show a message. Tests use a fake
+  HTTP client and a fake clock. New app dependency: http 1.6.0 (Dart team package, already
+  in the app through flutter_map; now listed directly because the app calls it).
+
 ## Next
 
-- SP04-C03 to SP04-C05.
+- SP04-C04 and SP04-C05.

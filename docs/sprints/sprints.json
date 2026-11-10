@@ -66,7 +66,7 @@
       "commits": [
         { "id": "SP04-C01", "repo": "flutter", "status": "done", "title": "Add OpenStreetMap map widget with attribution", "tests": "Widget test that attribution is always shown." },
         { "id": "SP04-C02", "repo": "flutter", "status": "done", "title": "Add place picker", "tests": "Tap and drag set the place; radius is clamped." },
-        { "id": "SP04-C03", "repo": "flutter", "status": "planned", "title": "Add address search within the Nominatim usage policy", "tests": "At most one request per second, identifying User-Agent, results cached (fake HTTP client)." },
+        { "id": "SP04-C03", "repo": "flutter", "status": "done", "title": "Add address search within the Nominatim usage policy", "tests": "At most one request per second, identifying User-Agent, results cached (fake HTTP client)." },
         { "id": "SP04-C04", "repo": "flutter", "status": "planned", "title": "Add frequent places", "tests": "Save, rename, delete, reuse in a task." },
         { "id": "SP04-C05", "repo": "flutter", "status": "planned", "title": "Add trip map with task pins and states", "tests": "Pin state follows task state (ready, locked, done)." }
       ]
