@@ -306,6 +306,13 @@ Screens S09, S10, S15, S15s.
   latlong2 0.10.1 (its coordinate type) and url_launcher 6.3.3 (opening the copyright page).
   The Android app now asks for the INTERNET permission, which release builds did not have.
 
+- SP04-C02 place picker (S09): the pin stays in the middle of the map and marks the place;
+  dragging the map or tapping a spot moves it. The circle shows the reminder radius, kept
+  between 50 and 500 m (a radius outside that opens clamped). The place needs a name; moving
+  it clears the old address and keeps unknown fields. It replaces the typed-in name and
+  coordinates dialog from SP03-C05; those SP03-C05 tests now drive the map picker instead.
+  A new place starts at the trip's first task, or at Birzeit University.
+
 ## Next
 
-- SP04-C02 to SP04-C05.
+- SP04-C03 to SP04-C05.
