@@ -16,7 +16,7 @@ screens in the project portal.
 | SP01 | v0.1.0 | Backend foundation | done | 7/7 |
 | SP02 | v0.2.0 | App domain and local storage | done | 7/7 |
 | SP03 | v0.3.0 | App shell, trips and suggested order | done | 6/6 |
-| SP04 | v0.4.0 | Map and places | in-progress | 4/5 |
+| SP04 | v0.4.0 | Map and places | done | 5/5 |
 | SP05 | v0.5.0 | Geofencing and reminders | planned | 0/5 |
 | SP06 | v0.6.0 | Trip Mode | planned | 0/4 |
 | SP07 | v0.7.0 | Identity and sharing | planned | 0/6 |
@@ -79,7 +79,7 @@ Status: done. Screens: S05, S05s, S06, S07, S07s, S08, S11.
 
 Pick places on a free map and search addresses.
 
-Status: in-progress. Screens: S09, S10, S15, S15s.
+Status: done. Screens: S09, S10, S15, S15s.
 
 | Commit | Repo | Status | Change | Unit tests |
 | --- | --- | --- | --- | --- |
@@ -87,7 +87,7 @@ Status: in-progress. Screens: S09, S10, S15, S15s.
 | SP04-C02 | flutter | done | Add place picker | Tap and drag set the place; radius is clamped. |
 | SP04-C03 | flutter | done | Add address search within the Nominatim usage policy | At most one request per second, identifying User-Agent, results cached (fake HTTP client). |
 | SP04-C04 | flutter | done | Add frequent places | Save, rename, delete, reuse in a task. |
-| SP04-C05 | flutter | planned | Add trip map with task pins and states | Pin state follows task state (ready, locked, done). |
+| SP04-C05 | flutter | done | Add trip map with task pins and states | Pin state follows task state (ready, locked, done). |
 
 ## SP05 v0.5.0: Geofencing and reminders
 

@@ -294,7 +294,7 @@ anonymous users in Authentication > Users. Supabase now issues publishable keys
 (`sb_publishable_...`) instead of the legacy anon key; the script already sends the key only in
 the `apikey` header, so it works unchanged, and the README now says publishable key.
 
-## SP04 (0.4.0 map and places, Flutter repo, in progress)
+## SP04 (0.4.0 map and places, Flutter repo)
 
 Screens S09, S10, S15, S15s.
 
@@ -331,6 +331,23 @@ Screens S09, S10, S15, S15s.
   or deleting a frequent place later leaves existing tasks alone. Nothing changes until the
   places have loaded, so a file that cannot be read is never saved over.
 
+- SP04-C05 trip map (S15, S15s): the Map tab shows the active trip (a menu picks another
+  when there are several) with one pin per task, coloured like the task list: done (green
+  tick), next up (orange, named under the pin), locked (grey lock) and open (blue number),
+  each with its reminder circle until it is done. The map frames all pins. Tapping a pin
+  shows the task below the map with Complete and Navigate. Complete on a locked task opens
+  the same "Complete X first" dialog as the trip screen, and "Go to" moves the map to that
+  task. Navigate hands the place to the phone's maps app as a geo: link; the app does no
+  routing. No distances yet (location comes in SP05) and no ETA. Other states: loading,
+  trips that cannot load (Try again), no active trip (Go to trips) and failed tiles
+  ("You're offline..."). The Map tab is built the first time it is opened, so no tiles
+  load before the user asks for the map. The blocked dialog and the task state rule are
+  now shared by the trip screen and the map.
+
+Verified by running in the app repo: `dart format`, `flutter analyze`, `flutter test`
+(328 tests). Not run yet: the app on a phone or emulator, live OpenStreetMap tiles and
+Nominatim searches (tests use fakes), and the pipelines on GitHub for C05.
+
 ## Next
 
-- SP04-C05.
+- Release 0.4.0 in the app repo (version, release notes, manual checklist), then SP05.
